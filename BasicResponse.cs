@@ -10,11 +10,11 @@ using Newtonsoft.Json;
 
 namespace GroupMeBot
 {
-    public static class GroupMeBot
+    public static class BasicResponse
     {
-        [FunctionName("GroupMeBot")]
+        [FunctionName("BasicResponse")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "GroupMeBot/BasicResponse")] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("GroupMeBot trigger function processed a request.");
