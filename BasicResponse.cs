@@ -17,8 +17,11 @@ namespace GroupMeBot
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "GroupMeBot/BasicResponse")] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("GroupMeBot trigger function processed a request.");
+            log.LogInformation("GroupMeBot trigger processed a request.");
 
+            log.LogInformation($"GroupMeBot trigger headers:  {req.Headers.ToString()}");
+
+            log.LogInformation($"GroupMeBot trigger body: {req.Body.ToString()}");
             string name = req.Query["name"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
