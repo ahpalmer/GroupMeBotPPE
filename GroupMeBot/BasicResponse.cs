@@ -1,6 +1,9 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Web;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -12,6 +15,9 @@ using GroupMeUtilities;
 using GroupMeUtilities.Model;
 using Microsoft.AspNetCore.Http.Features;
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Hosting.Server;
+using System.Collections.Specialized;
+using System.Text;
 
 namespace GroupMeBot
 {
@@ -29,21 +35,15 @@ namespace GroupMeBot
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "GroupMeBot/BasicResponse")] HttpRequest req,
             ILogger log)
         {
-            //TODO: Handle an HTTPresponse that does not contain headers or a body.  Right now it's breaking my code and azure probably won't handle it super well.
-            MessageItem message = null;
             BasicResponse basicResponse= new BasicResponse();
             log.LogInformation("GroupMeBot trigger processed a request.");
-
-            //log.LogInformation($"GroupMeBot trigger headers:  {req.Headers.ToString()}");
 
             string name = req.Query["name"];
 
             log.LogInformation($"GroupMeBot trigger message attempt to parse incoming request:");
             var working = basicResponse.ParseIncomingRequestAsync(req);
-
-            //This async logic right now is pointless.  It runs the ParseIncomingRequest method "asynchronously" and then waits for it to be done before moving on.  I'm doing it to allow for future functionality
             await Task.WhenAll(working);
-            log.LogInformation($"GroupMeBot trigger message: {working.ToString()}");
+            log.LogInformation($"GroupMeBot trigger message: {working.Result}");
 
             try
             {
@@ -63,6 +63,8 @@ namespace GroupMeBot
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
 
+            log.LogInformation($"GroupMeBot trigger message name: {name}");
+
             string responseMessage = string.IsNullOrEmpty(name)
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
                 : $"Hello, {name}. This HTTP triggered function executed successfully.";
@@ -77,22 +79,69 @@ namespace GroupMeBot
         /// <returns>True if a message was properly parsed from the request</returns>
         public async Task<bool> ParseIncomingRequestAsync(HttpRequest req)
         {
-            
             if (req == null)
             {
                 return false;
             }
 
             string content = String.Empty;
-            using (StreamReader sr = new StreamReader(req.Body)) 
+            using (StreamReader sr = new StreamReader(req.Body))
             {
                 content = await sr.ReadToEndAsync();
             }
 
-            //string text = JsonConvert.DeserializeObject(content).ToString();
-            //Todo: this is from the example and it's probably more interesting, but I can't get it to work yet.
             Message = JsonConvert.DeserializeObject<MessageItem>(content);
             return Message?.Text != null;
         }
+
+        /// <summary>
+        /// Parses an incoming http request and prints out all of the req headers
+        /// </summary>
+        /// <param name="req">Incoming request</param>
+        /// <returns>will return a string of all of the headers</returns>
+        public async Task<string> ParseIncomingHeadersAsync(HttpRequest req)
+        {
+            if (req == null)
+            {
+                return "";
+            }
+
+            var builder = new StringBuilder(Environment.NewLine);
+            foreach (var header in req.Headers)
+            {
+                builder.AppendLine($"{header.Key}: {header.Value}");
+            }
+            var headersDump = builder.ToString();
+
+            return headersDump;
+        }
+
+        /// <summary>
+        /// Checks to see if a specific word is present in the body of the message
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
+        public async Task<bool> AnalyzeIncomingRequestAsync(HttpRequest req, ILogger log, string triggerWord = "test")
+        {
+            if (req == null)
+            {
+                return false;
+            }
+
+            bool containsTrigger = Message.Text.ToString().Contains(triggerWord);
+            log.LogInformation($"Does the message body contain this triggerWord: {triggerWord}? {containsTrigger}");
+            if (containsTrigger)
+            {
+
+                return containsTrigger;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        
     }
 }
