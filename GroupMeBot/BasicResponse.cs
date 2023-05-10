@@ -30,10 +30,11 @@ namespace GroupMeBot
             ILogger log)
         {
             //TODO: Handle an HTTPresponse that does not contain headers or a body.  Right now it's breaking my code and azure probably won't handle it super well.
+            MessageItem message = null;
             BasicResponse basicResponse= new BasicResponse();
             log.LogInformation("GroupMeBot trigger processed a request.");
 
-            log.LogInformation($"GroupMeBot trigger headers:  {req.Headers.ToString()}");
+            //log.LogInformation($"GroupMeBot trigger headers:  {req.Headers.ToString()}");
 
             string name = req.Query["name"];
 
@@ -44,19 +45,19 @@ namespace GroupMeBot
             await Task.WhenAll(working);
             log.LogInformation($"GroupMeBot trigger message: {working.ToString()}");
 
-            //try
-            //{
-            //    string text = basicResponse.Message.Text;
-            //    log.LogInformation($"GroupMeBot trigger message body text: {text}");
-            //}
-            //catch(NullReferenceException nex)
-            //{
-            //    log.LogInformation(nex.Message);
-            //}
-            //catch (Exception ex)
-            //{
-            //    log.LogInformation(ex.Message);
-            //}
+            try
+            {
+                string text = basicResponse.Message.Text;
+                log.LogInformation($"GroupMeBot trigger message body text: {text}");
+            }
+            catch (NullReferenceException nex)
+            {
+                log.LogInformation($"Error: there was probably no HTTP body which prevented the app from getting text {nex.Message}");
+            }
+            catch (Exception ex)
+            {
+                log.LogInformation(ex.Message);
+            }
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
@@ -74,13 +75,12 @@ namespace GroupMeBot
         /// </summary>
         /// <param name="req">Incoming request</param>
         /// <returns>True if a message was properly parsed from the request</returns>
-        public async Task<string> ParseIncomingRequestAsync(HttpRequest req)
+        public async Task<bool> ParseIncomingRequestAsync(HttpRequest req)
         {
             
             if (req == null)
             {
-                string answer = "";
-                return answer;
+                return false;
             }
 
             string content = String.Empty;
@@ -89,10 +89,10 @@ namespace GroupMeBot
                 content = await sr.ReadToEndAsync();
             }
 
-            string text = JsonConvert.DeserializeObject(content).ToString();
+            //string text = JsonConvert.DeserializeObject(content).ToString();
             //Todo: this is from the example and it's probably more interesting, but I can't get it to work yet.
             Message = JsonConvert.DeserializeObject<MessageItem>(content);
-            return text;
+            return Message?.Text != null;
         }
     }
 }
