@@ -20,12 +20,7 @@ public class BotPoster : IBotPoster
         botPostUrl = BotPostUrl;
     }
 
-    /// <summary>
-    /// Posts a basic text message
-    /// </summary>
-    /// <param name="text">Text to send to the group</param>
-    /// <param name="botId">ID of the bot that sends the message</param>
-    /// <returns>The status of the outgoing operation to post the message</returns>
+    /// <inheritdoc/>
     public async Task<HttpStatusCode> PostAsync(string text, string botId)
     {
         var post = new CreateBotPostRequest
@@ -36,11 +31,7 @@ public class BotPoster : IBotPoster
         return await PostBotMessage(post);
     }
 
-    /// <summary>
-    /// Posts a bot message to the service
-    /// </summary>
-    /// <param name="request">Request to post</param>
-    /// <returns>Response code from the GroupMe service</returns>
+    /// <inheritdoc/>
     private async Task<HttpStatusCode> PostBotMessage(CreateBotPostRequest request)
     {
         if (request == null)
@@ -50,12 +41,17 @@ public class BotPoster : IBotPoster
 
         //TODO: this is where you left off on 10 May 2023
         //Understand this before you finalize it in your code.
-        //using (StringContent content = JsonSerializer.SerializeToJson(request))
-        //{
-        //    var client = new HttpClient();
-        //    HttpResponseMessage result = await client.PostAsync(_botPostUrl, content);
-        //    return result != null ? result.StatusCode : HttpStatusCode.ServiceUnavailable;
-        //}
+        //Here is the explanation: You use the using () method as a form of garbage collection.
+        //The using() method is actually shorthand for a try{} finally{garbage collection} block
+        //You must use the using() method for any class that is based on the IDisposable base class.
+        //StringContent is based on a class that is based on a class that is based on IDisposable.
+        //Therefore, to use StringContent you must utilize the using() method
+        using (StringContent content = JsonSerializer.SerializeToJson(request))
+        {
+            var client = new HttpClient();
+            HttpResponseMessage result = await client.PostAsync(_botPostUrl, content);
+            return result != null ? result.StatusCode : HttpStatusCode.ServiceUnavailable;
+        }
 
     }
 }

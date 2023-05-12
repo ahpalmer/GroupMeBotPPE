@@ -72,6 +72,8 @@ namespace GroupMeBot
             return new OkObjectResult(responseMessage);
         }
 
+        //TODO: Put all of the below methods in this class into a separate utility (or whatever) class that has an interface that you can test.
+
         /// <summary>
         /// Parses an incoming HTTP request into a GroupMe message
         /// </summary>
@@ -122,17 +124,19 @@ namespace GroupMeBot
         /// <param name="req"></param>
         /// <param name="log"></param>
         /// <returns></returns>
-        public async Task<bool> AnalyzeIncomingRequestAsync(HttpRequest req, ILogger log, string triggerWord = "test")
+        public async Task<HttpResponse> AnswerYesOrNo(HttpRequest req, ILogger log, string triggerWord = "test")
         {
             if (req == null)
             {
-                return false;
+
+                return await CreateEmptyResponse(req, log);
             }
 
-            bool containsTrigger = Message.Text.ToString().Contains(triggerWord);
+            bool containsTrigger = Message.Text.ToString().Contains(triggerWord, StringComparison.OrdinalIgnoreCase);
             log.LogInformation($"Does the message body contain this triggerWord: {triggerWord}? {containsTrigger}");
             if (containsTrigger)
             {
+                //Create and send a message back
 
                 return containsTrigger;
             }
@@ -142,6 +146,21 @@ namespace GroupMeBot
             }
         }
 
-        
+        public async Task<HttpResponse> CreateEmptyResponse(HttpRequest req, ILogger log)
+        {
+            HttpResponse response = new HttpResponse(HttpStatusCode.BadRequest);
+
+
+        }
+
+        public async Task<HttpResponse> SendResponseToGroupMe(HttpRequest req, ILogger log)
+        {
+
+        }
+
+        public async Task<HttpResponse> CreateJSONResponse(HttpRequest req, ILogger log)
+        {
+
+        }
     }
 }
