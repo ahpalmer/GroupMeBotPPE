@@ -162,5 +162,19 @@ namespace GroupMeBot
         {
 
         }
+
+        public static async Task Run(HttpRequest req, ILogger log)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("");
+
+                HttpResponseMessage response = await client.GetAsync("https://example");
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                log.LogInformation(responseBody);
+            }
+        }
     }
 }
