@@ -63,6 +63,18 @@ namespace GroupMeBot
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
 
+            log.LogInformation("Attempting to send Hello World message");
+
+            try
+            {
+                await SendResponse.PostAsync(SendResponse.sharedClient);
+                log.LogInformation("Post success");
+            }
+            catch (Exception ex)
+            {
+                log.LogError(ex, "Post failure");
+            }
+
             log.LogInformation($"GroupMeBot trigger message name: {name}");
 
             string responseMessage = string.IsNullOrEmpty(name)
@@ -124,57 +136,43 @@ namespace GroupMeBot
         /// <param name="req"></param>
         /// <param name="log"></param>
         /// <returns></returns>
-        public async Task<HttpResponse> AnswerYesOrNo(HttpRequest req, ILogger log, string triggerWord = "test")
-        {
-            if (req == null)
-            {
+        //public async Task<HttpResponse> AnswerYesOrNo(HttpRequest req, ILogger log, string triggerWord = "test")
+        //{
+        //    if (req == null)
+        //    {
 
-                return await CreateEmptyResponse(req, log);
-            }
+        //        return await CreateEmptyResponse(req, log);
+        //    }
 
-            bool containsTrigger = Message.Text.ToString().Contains(triggerWord, StringComparison.OrdinalIgnoreCase);
-            log.LogInformation($"Does the message body contain this triggerWord: {triggerWord}? {containsTrigger}");
-            if (containsTrigger)
-            {
-                //Create and send a message back
+        //    bool containsTrigger = Message.Text.ToString().Contains(triggerWord, StringComparison.OrdinalIgnoreCase);
+        //    log.LogInformation($"Does the message body contain this triggerWord: {triggerWord}? {containsTrigger}");
+        //    if (containsTrigger)
+        //    {
+        //        //Create and send a message back
 
-                return containsTrigger;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //        return containsTrigger;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        public async Task<HttpResponse> CreateEmptyResponse(HttpRequest req, ILogger log)
-        {
-            HttpResponse response = new HttpResponse(HttpStatusCode.BadRequest);
+        //public async Task<HttpResponse> CreateEmptyResponse(HttpRequest req, ILogger log)
+        //{
+        //    HttpResponse response = new HttpResponse(HttpStatusCode.BadRequest);
 
 
-        }
+        //}
 
-        public async Task<HttpResponse> SendResponseToGroupMe(HttpRequest req, ILogger log)
-        {
+        //public async Task<HttpResponse> SendResponseToGroupMe(HttpRequest req, ILogger log)
+        //{
 
-        }
+        //}
 
-        public async Task<HttpResponse> CreateJSONResponse(HttpRequest req, ILogger log)
-        {
+        //public async Task<HttpResponse> CreateJSONResponse(HttpRequest req, ILogger log)
+        //{
 
-        }
-
-        public static async Task Run(HttpRequest req, ILogger log)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Add("");
-
-                HttpResponseMessage response = await client.GetAsync("https://example");
-
-                string responseBody = await response.Content.ReadAsStringAsync();
-
-                log.LogInformation(responseBody);
-            }
-        }
+        //}
     }
 }
