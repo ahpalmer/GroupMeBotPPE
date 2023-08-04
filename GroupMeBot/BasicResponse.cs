@@ -59,9 +59,9 @@ namespace GroupMeBot
                 log.LogInformation(ex.Message);
             }
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            //string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            //dynamic data = JsonConvert.DeserializeObject(requestBody);
+            //name = name ?? data?.name;
 
             log.LogInformation("Attempting to send Hello World message");
 
