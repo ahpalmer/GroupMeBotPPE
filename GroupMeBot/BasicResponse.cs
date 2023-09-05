@@ -30,6 +30,8 @@ namespace GroupMeBot
         /// </summary>
         public MessageItem Message { get; set; }
 
+        //TODO: Get rid of deprecated stuff
+
         [FunctionName("BasicResponse")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "GroupMeBot/BasicResponse")] HttpRequest req,

@@ -1,4 +1,4 @@
-﻿namespace GroupMeUtilities.Service;
+﻿namespace Core.PostService;
 
 using GroupMeUtilities.Model;
 using System;
