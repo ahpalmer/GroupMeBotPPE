@@ -1,23 +1,18 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using System.Web;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Net.Http;
-using GroupMeUtilities;
 using GroupMeUtilities.Model;
-using Microsoft.AspNetCore.Http.Features;
-using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Hosting.Server;
-using System.Collections.Specialized;
 using System.Text;
+using Core.IncomingService;
+using System.Net.Http;
+using System.Net;
+using System.Security.Cryptography;
 
 namespace GroupMeBot
 {
@@ -30,19 +25,18 @@ namespace GroupMeBot
         /// </summary>
         public MessageItem Message { get; set; }
 
-        //TODO: Get rid of deprecated stuff
-
         [FunctionName("BasicResponse")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "GroupMeBot/BasicResponse")] HttpRequest req,
             ILogger log)
         {
-            BasicResponse basicResponse= new BasicResponse();
             log.LogInformation("GroupMeBot trigger processed a request.");
+            BasicResponse basicResponse = new BasicResponse();
+            IncomingMessage incMessage = new IncomingMessage(req);
 
-            string name = req.Query["name"];
 
             log.LogInformation($"GroupMeBot trigger message attempt to parse incoming request:");
+            var work = incMessage.ParseIncomingRequestAsync();
             var working = basicResponse.ParseIncomingRequestAsync(req);
             await Task.WhenAll(working);
             log.LogInformation($"GroupMeBot trigger message: {working.Result}");
@@ -82,6 +76,7 @@ namespace GroupMeBot
             string responseMessage = string.IsNullOrEmpty(name)
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
                 : $"Hello, {name}. This HTTP triggered function executed successfully.";
+
 
             return new OkObjectResult(responseMessage);
         }
