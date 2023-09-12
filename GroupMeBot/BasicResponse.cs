@@ -37,9 +37,9 @@ namespace GroupMeBot
 
             log.LogInformation($"GroupMeBot trigger message attempt to parse incoming request:");
             var work = incMessage.ParseIncomingRequestAsync();
-            var working = basicResponse.ParseIncomingRequestAsync(req);
-            await Task.WhenAll(working);
-            log.LogInformation($"GroupMeBot trigger message: {working.Result}");
+
+            await Task.WhenAll(work);
+            log.LogInformation($"GroupMeBot trigger text: {incMessage.Message.Text}");
 
             try
             {
