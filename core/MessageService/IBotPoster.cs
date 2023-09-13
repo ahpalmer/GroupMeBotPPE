@@ -1,6 +1,6 @@
 ﻿namespace Core.PostService;
 
-using GroupMeUtilities.Model;
+using GroupMeUtilities.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

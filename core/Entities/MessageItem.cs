@@ -1,4 +1,4 @@
-﻿namespace GroupMeUtilities.Model;
+﻿namespace GroupMeUtilities.Entities;
 
 using System;
 using System.Collections.Generic;

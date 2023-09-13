@@ -1,4 +1,4 @@
-﻿namespace GroupMeUtilities.Model;
+﻿namespace GroupMeUtilities.Entities;
 
 using System;
 using System.Collections.Generic;
@@ -50,4 +50,9 @@ public class CreateBotPostRequest
     /// </summary>
     //[DataMember(Name = "attachments")]
     //public Attachment[] Attachments { get; set; }
+    CreateBotPostRequest(string botId, string text)
+    {
+        BotId = botId;
+        Text = text;
+    }
 }
