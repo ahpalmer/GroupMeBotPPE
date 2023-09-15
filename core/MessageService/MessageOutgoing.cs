@@ -44,7 +44,7 @@ public class MessageOutgoing : IMessageOutgoing
         {
             var client = new HttpClient();
             HttpResponseMessage result = await client.PostAsync(_botPostUrl, content);
-            return result != null ? result.StatusCode : HttpStatusCode.ServiceUnavailable;
+            return result != null ? result.StatusCode : HttpStatusCode.BadRequest;
         }
 
     }

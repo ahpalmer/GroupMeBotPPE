@@ -62,7 +62,14 @@ public class MessageIncoming : IMessageIncoming
         {
             MessageBot messageBot = new MessageBot(Message);
             var status = await messageBot.HandleIncomingTextAsync();
-            
+            if (status == HttpStatusCode.OK)
+            {
+                return new OkObjectResult(status);
+            }
+            else if (status == HttpStatusCode.BadRequest)
+            {
+                return new BadRequestObjectResult(status);
+            }
         }
 
         return new OkObjectResult("No response criteria met, no response required");
