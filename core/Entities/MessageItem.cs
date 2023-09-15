@@ -1,6 +1,4 @@
-﻿namespace GroupMeUtilities.Entities;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
@@ -8,6 +6,8 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+
+namespace GroupMeBot.Model;
 
 /// <summary>
 /// A generic message item from the server - support for group and direct messages

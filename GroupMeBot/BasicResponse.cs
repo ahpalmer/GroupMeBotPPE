@@ -7,124 +7,72 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using GroupMeUtilities.Model;
+using GroupMeBot.Model;
 using System.Text;
-using System.Net.Http;
-using System.Net;
-using System.Security.Cryptography;
-using Core.MessageService;
+using System.Runtime.CompilerServices;
+using System.Linq;
 
-namespace GroupMeBot
+namespace GroupMeBot.Controller;
+
+public class BasicResponse
 {
-    public class BasicResponse
+    private const string BotPostUrl = "https://api.groupme.com/v3/bots/post";
+
+    /// <summary>
+    /// This is the main azure function.  It is only used to receive an HTTPRequest, pass it to the Model, and return an appropriate HTTPResponse to the client.
+    /// </summary>
+    public MessageItem Message { get; set; }
+
+    [FunctionName("BasicResponse")]
+    public static async Task<IActionResult> Run(
+        [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "GroupMeBot/BasicResponse")] HttpRequest req,
+        ILogger log)
     {
-        private const string BotPostUrl = "https://api.groupme.com/v3/bots/post";
+        log.LogInformation("GroupMeBot trigger processed a request.");
+        MessageIncoming incMessage = new MessageIncoming(req);
 
-        /// <summary>
-        /// Gets or sets the message to parse
-        /// </summary>
-        public MessageItem Message { get; set; }
+        //Is this how to send a response?!?
+        //req.HttpContext.Response.StatusCode = 418;
 
-        [FunctionName("BasicResponse")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "GroupMeBot/BasicResponse")] HttpRequest req,
-            ILogger log)
+        log.LogInformation($"GroupMeBot trigger message attempt to parse incoming request:");
+        var httpResponse = await incMessage.ParseIncomingRequestAsync();
+
+        try
         {
-            log.LogInformation("GroupMeBot trigger processed a request.");
-            BasicResponse basicResponse = new BasicResponse();
-            MessageIncoming incMessage = new MessageIncoming(req);
-
-
-            log.LogInformation($"GroupMeBot trigger message attempt to parse incoming request:");
-            var work = incMessage.ParseIncomingRequestAsync();
-
-            await Task.WhenAll(work);
+            string text = incMessage.Message.Text;
             log.LogInformation($"GroupMeBot trigger text: {incMessage.Message.Text}");
-
-            try
-            {
-                string text = basicResponse.Message.Text;
-                log.LogInformation($"GroupMeBot trigger message body text: {text}");
-            }
-            catch (NullReferenceException nex)
-            {
-                log.LogInformation($"Error: there was probably no HTTP body which prevented the app from getting text {nex.Message}");
-            }
-            catch (Exception ex)
-            {
-                log.LogInformation(ex.Message);
-            }
-
-            //string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            //dynamic data = JsonConvert.DeserializeObject(requestBody);
-            //name = name ?? data?.name;
-
-            log.LogInformation("Attempting to send Hello World message");
-
-            try
-            {
-                await SendResponse.PostAsync(SendResponse.sharedClient);
-                log.LogInformation("Post success");
-            }
-            catch (Exception ex)
-            {
-                log.LogError(ex, "Post failure");
-            }
-
-            log.LogInformation($"GroupMeBot trigger message name: {name}");
-
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
-
-
-            return new OkObjectResult(responseMessage);
         }
-
-        //TODO: Put all of the below methods in this class into a separate utility (or whatever) class that has an interface that you can test.
-
-        /// <summary>
-        /// Parses an incoming HTTP request into a GroupMe message
-        /// </summary>
-        /// <param name="req">Incoming request</param>
-        /// <returns>True if a message was properly parsed from the request</returns>
-        public async Task<bool> ParseIncomingRequestAsync(HttpRequest req)
+        catch (NullReferenceException nex)
         {
-            if (req == null)
-            {
-                return false;
-            }
-
-            string content = String.Empty;
-            using (StreamReader sr = new StreamReader(req.Body))
-            {
-                content = await sr.ReadToEndAsync();
-            }
-
-            Message = JsonConvert.DeserializeObject<MessageItem>(content);
-            return Message?.Text != null;
+            log.LogInformation($"Error: there was probably no HTTP body which prevented the app from getting text {nex.Message}");
         }
-
-        /// <summary>
-        /// Parses an incoming http request and prints out all of the req headers
-        /// </summary>
-        /// <param name="req">Incoming request</param>
-        /// <returns>will return a string of all of the headers</returns>
-        public async Task<string> ParseIncomingHeadersAsync(HttpRequest req)
+        catch (Exception ex)
         {
-            if (req == null)
-            {
-                return "";
-            }
-
-            var builder = new StringBuilder(Environment.NewLine);
-            foreach (var header in req.Headers)
-            {
-                builder.AppendLine($"{header.Key}: {header.Value}");
-            }
-            var headersDump = builder.ToString();
-
-            return headersDump;
+            log.LogInformation(ex.Message);
         }
+
+        return httpResponse;
+
+        //string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+        //dynamic data = JsonConvert.DeserializeObject(requestBody);
+        //name = name ?? data?.name;
+
+        // Todo: move this section of code to the botposter class and run it from there.
+        //Don't do this in this azure function.  Do it from a different class.
+        //log.LogInformation("Attempting to send Hello World message");
+
+        //try
+        //{
+        //    await SendResponse.PostAsync(SendResponse.sharedClient);
+        //    log.LogInformation("Post success");
+        //}
+        //catch (Exception ex)
+        //{
+        //    log.LogError(ex, "Post failure");
+        //}
+
+        //string responseMessage = string.IsNullOrEmpty(name)
+        //    ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
+        //    : $"Hello, {name}. This HTTP triggered function executed successfully.";
     }
 }

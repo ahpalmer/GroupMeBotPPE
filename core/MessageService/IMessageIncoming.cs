@@ -1,12 +1,12 @@
-﻿using GroupMeUtilities.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Core.MessageService;
+namespace GroupMeBot.Model;
 
 public interface IMessageIncoming
 {
@@ -15,8 +15,8 @@ public interface IMessageIncoming
     /// <summary>
     /// Parses an incoming http request and sends it to the message bot or the analysis bot
     /// </summary>
-    /// <returns>returns an HttpResponse that will be sent to the GroupMe</returns>
-    public Task<HttpResponseMessage> ParseIncomingRequestAsync();
+    /// <returns>Returns an ObjectResult (that inherits from IActionResult) that will be sent to the client as an HttpResponse</returns>
+    public Task<IActionResult> ParseIncomingRequestAsync();
 
     /// <summary>
     /// Parses an incoming http request and prints out all of the req headers

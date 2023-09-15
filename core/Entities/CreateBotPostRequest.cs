@@ -1,38 +1,21 @@
-﻿namespace GroupMeUtilities.Entities;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Net.Mail;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Xml.Linq;
 
-/// <summary>
-/// Represents a bot message to be posted to GroupMe. Messages in the following JSON format:
-/// 
-/// {
-///    "bot_id": [botId],
-///    "text": [messageText],
-///    "attachments": [arrayOfMessageAttachments]
-/// }
-/// 
-/// for example
-/// 
-/// {
-///   "bot_id": "123",
-///   "text": "Hello"
-///   "attachments": [
-///     {
-///       "type": emoji,
-///       "charmap": [[1,62],[1,62]]
-///     }
-///   ]
-/// </summary>
+namespace GroupMeBot.Model;
+
 [DataContract]
 public class CreateBotPostRequest
 {
+    public CreateBotPostRequest(string botId, string text)
+    {
+        BotId = botId;
+        Text = text;
+    }
+
     /// <summary>
     /// Gets or sets the ID of the bot that is sending the message
     /// </summary>
@@ -50,9 +33,5 @@ public class CreateBotPostRequest
     /// </summary>
     //[DataMember(Name = "attachments")]
     //public Attachment[] Attachments { get; set; }
-    CreateBotPostRequest(string botId, string text)
-    {
-        BotId = botId;
-        Text = text;
-    }
+
 }
