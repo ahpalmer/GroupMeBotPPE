@@ -31,6 +31,7 @@ public class MessageIncoming : IMessageIncoming
             return new BadRequestObjectResult("No request was received");
         }
 
+        //This is the problem.  I am not putting the text 
         string content = string.Empty;
         using (StreamReader sr = new StreamReader(_req.Body))
         {
@@ -39,10 +40,11 @@ public class MessageIncoming : IMessageIncoming
         }
 
 
-        log.LogInformation($"Parse Incoming Request-read HttpRequest: {content.Substring(0, 10)}");
+        log.LogInformation($"Parse Incoming Request-read HttpRequest: {content}");
         if (content != null)
         {
             Message = JsonConvert.DeserializeObject<MessageItem>(content)!;
+            log.LogInformation($"Parse Incoming Request-Message text content: {Message.Text}");
         }
 
         if (Message.UserId == "a4165ae5f7ad5ab682e2c3dd52")
@@ -69,7 +71,7 @@ public class MessageIncoming : IMessageIncoming
         if (messageRegex.Success)
         {
             log.LogInformation($"Parse Incoming Request-regex match successful");
-            MessageBot messageBot = new MessageBot(Message);
+            MessageBot messageBot = new MessageBot(Message, log);
 
             log.LogInformation($"Parse Incoming Request-HandleIncomingTextAsync");
             var status = await messageBot.HandleIncomingTextAsync();
