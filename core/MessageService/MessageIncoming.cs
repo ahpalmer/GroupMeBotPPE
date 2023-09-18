@@ -12,8 +12,8 @@ public class MessageIncoming : IMessageIncoming
 {
     public MessageItem Message { get; set; }
     private readonly HttpRequest _req;
-    private static readonly Regex BotAnalysisRegex = new Regex("((?i)(\bbot\b.*\banalysis\b) | (\banalysis\b.*\bbot\b)(?-i))");
-    private static readonly Regex BotMessageRegex = new Regex("((?i)(\bbot\b.*\bmessage\b) | (\bmessage\b.*\bbot\b)(?-i))");
+    private static readonly Regex BotAnalysisRegex = new Regex(@"((?i)(\bbot\b.*\banalysis\b)|(\banalysis\b.*\bbot\b)(?-i))");
+    private static readonly Regex BotMessageRegex = new Regex(@"((?i)(\bbot\b.*\bmessage\b)|(\bmessage\b.*\bbot\b)(?-i))");
     public ILogger log { get; private set; }
 
     public MessageIncoming(HttpRequest req, ILogger logger)
