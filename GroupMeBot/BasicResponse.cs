@@ -29,7 +29,7 @@ public class BasicResponse
         ILogger log)
     {
         log.LogInformation("GroupMeBot trigger processed a request.");
-        MessageIncoming incMessage = new MessageIncoming(req);
+        MessageIncoming incMessage = new MessageIncoming(req, log);
 
         //Is this how to send a response?!?
         //req.HttpContext.Response.StatusCode = 418;
@@ -52,27 +52,5 @@ public class BasicResponse
         }
 
         return httpResponse;
-
-        //string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-        //dynamic data = JsonConvert.DeserializeObject(requestBody);
-        //name = name ?? data?.name;
-
-        // Todo: move this section of code to the botposter class and run it from there.
-        //Don't do this in this azure function.  Do it from a different class.
-        //log.LogInformation("Attempting to send Hello World message");
-
-        //try
-        //{
-        //    await SendResponse.PostAsync(SendResponse.sharedClient);
-        //    log.LogInformation("Post success");
-        //}
-        //catch (Exception ex)
-        //{
-        //    log.LogError(ex, "Post failure");
-        //}
-
-        //string responseMessage = string.IsNullOrEmpty(name)
-        //    ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-        //    : $"Hello, {name}. This HTTP triggered function executed successfully.";
     }
 }
