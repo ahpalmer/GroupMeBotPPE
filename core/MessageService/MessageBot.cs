@@ -31,6 +31,12 @@ public class MessageBot
         set { _log = value; }
     }
 
+    // TODO: Convert to DI
+    public IMessageOutgoing BotPoster
+    {
+        get { return _botPoster; }
+    }
+
     public async Task<HttpStatusCode> HandleIncomingTextAsync()
     {
         Log.LogInformation("MessageBot-HandleIncomingTextAsync method start");
@@ -45,7 +51,8 @@ public class MessageBot
         if (regexMatch.Success)
         {
             Log.LogInformation("MessageBot-regex match was a success");
-            await _botPoster.PostAsync("Received Message Response Request", "a4165ae5f7ad5ab682e2c3dd52");
+            // TODO: More logic that will handle HTTPStatuscodes from the botposter class
+            await BotPoster.PostAsync("Received Message Response Request", "a4165ae5f7ad5ab682e2c3dd52");
             return HttpStatusCode.OK;
         }
 
