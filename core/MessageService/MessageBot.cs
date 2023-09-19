@@ -13,7 +13,7 @@ namespace GroupMeBot.Model;
 public class MessageBot
 {
     private MessageItem _message { get; set; }
-    private static readonly Regex BotCannedResponseRegex = new Regex("((?i)(?=.*\bbot\b)(?=.*\bmessage\b)(?=.*\bresponse\b)(?-i))");
+    private static readonly Regex BotCannedResponseRegex = new Regex(@"((?i)(?=.*\bbot\b)(?=.*\bmessage\b)(?=.*\bresponse\b)(?-i))");
     private IMessageOutgoing _botPoster;
     private const string BotPostUrl = "https://api.groupme.com/v3/bots/post";
     private ILogger _log;
@@ -45,10 +45,11 @@ public class MessageBot
         if (regexMatch.Success)
         {
             Log.LogInformation("MessageBot-regex match was a success");
-            return await _botPoster.PostAsync("Received Message Response Request", "a4165ae5f7ad5ab682e2c3dd52");
+            await _botPoster.PostAsync("Received Message Response Request", "a4165ae5f7ad5ab682e2c3dd52");
+            return HttpStatusCode.OK;
         }
 
-        Log.LogInformation("MessageBot-attempt regex match");
+        Log.LogInformation("MessageBot-no regex match bad request");
         return HttpStatusCode.BadRequest;
     }
 
