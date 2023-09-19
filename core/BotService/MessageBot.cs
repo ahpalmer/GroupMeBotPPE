@@ -7,21 +7,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
+using GroupMeBot.Model;
 
-namespace GroupMeBot.Model;
+namespace Model.BotService;
 
 public class MessageBot
 {
     private MessageItem _message { get; set; }
     private static readonly Regex BotCannedResponseRegex = new Regex(@"((?i)(?=.*\bbot\b)(?=.*\bmessage\b)(?=.*\bresponse\b)(?-i))");
     private IMessageOutgoing _botPoster;
-    private const string BotPostUrl = "https://api.groupme.com/v3/bots/post";
+    private const string _botPostUrl = "https://api.groupme.com/v3/bots/post";
     private ILogger _log;
 
     public MessageBot(MessageItem message, ILogger log)
     {
         _message = message;
-        _botPoster = new MessageOutgoing(BotPostUrl);
+        _botPoster = new MessageOutgoing(_botPostUrl);
         _log = log;
     }
 

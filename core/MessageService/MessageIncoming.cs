@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Model.BotService;
 
 namespace GroupMeBot.Model;
 
@@ -60,11 +61,13 @@ public class MessageIncoming : IMessageIncoming
         }
 
         log.LogInformation($"Parse Incoming Request-attempting regex match");
-        Match analysisBot = BotAnalysisRegex.Match(Message.Text);
-        if (analysisBot.Success)
+        Match analysisRegex = BotAnalysisRegex.Match(Message.Text);
+        if (analysisRegex.Success)
         {
+            log.LogInformation($"Parse Incoming Request-analysis regex match successful");
+            AnalysisBot analysisBot = new AnalysisBot(Message, log);
             //Run analysis code
-            throw new NotImplementedException();
+            return new OkObjectResult(analysisBot);
         }
 
         Match messageRegex = BotMessageRegex.Match(Message.Text);
