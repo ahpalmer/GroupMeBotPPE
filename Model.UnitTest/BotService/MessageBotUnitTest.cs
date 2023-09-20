@@ -38,4 +38,22 @@ public class MessageBotUnitTest
         //Assert
         Assert.AreEqual(HttpStatusCode.OK, result);
     }
+
+    [TestMethod]
+    public void HandleIncomingMessage_BadInput_ReturnHttpBadRequest()
+    {
+        //Arrange
+        MessageItem messageItem = new MessageItem("Test message");
+        var mockLogger = new Mock<ILogger>();
+        var MessageBot = new MessageBot(messageItem, mockLogger.Object);
+        var mockMessageOutgoing = new Mock<IMessageOutgoing>();
+
+        mockMessageOutgoing.Setup(_ => _.PostAsync("Received Message Response Request", "a4165ae5f7ad5ab682e2c3dd52")).ReturnsAsync(HttpStatusCode.OK);
+
+        //Act
+        HttpStatusCode result = MessageBot.HandleIncomingTextAsync().Result;
+
+        //Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, result);
+    }
 }
