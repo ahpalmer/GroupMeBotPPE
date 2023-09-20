@@ -15,6 +15,14 @@ namespace GroupMeBot.Model;
 [DataContract]
 public class MessageItem
 {
+    public MessageItem() 
+    {
+    }
+
+    public MessageItem(string text)
+    {
+        Text = text;
+    }
     /// <summary>
     /// Gets or sets the the server ID for this message
     /// </summary>

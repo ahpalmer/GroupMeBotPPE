@@ -15,14 +15,14 @@ public class MessageBot
 {
     private MessageItem _message { get; set; }
     private static readonly Regex BotCannedResponseRegex = new Regex(@"((?i)(?=.*\bbot\b)(?=.*\bmessage\b)(?=.*\bresponse\b)(?-i))");
-    private IMessageOutgoing _botPoster;
+    private IMessageOutgoing _messageOutgoing;
     private const string _botPostUrl = "https://api.groupme.com/v3/bots/post";
     private ILogger _log;
 
     public MessageBot(MessageItem message, ILogger log)
     {
         _message = message;
-        _botPoster = new MessageOutgoing(_botPostUrl);
+        _messageOutgoing = new MessageOutgoing(_botPostUrl);
         _log = log;
     }
 
@@ -33,9 +33,9 @@ public class MessageBot
     }
 
     // TODO: Convert to DI
-    public IMessageOutgoing BotPoster
+    public IMessageOutgoing MessageOutgoing
     {
-        get { return _botPoster; }
+        get { return _messageOutgoing; }
     }
 
     public async Task<HttpStatusCode> HandleIncomingTextAsync()
@@ -53,7 +53,7 @@ public class MessageBot
         {
             Log.LogInformation("MessageBot-regex match was a success");
             // TODO: More logic that will handle HTTPStatuscodes from the botposter class
-            await BotPoster.PostAsync("Received Message Response Request", "a4165ae5f7ad5ab682e2c3dd52");
+            await MessageOutgoing.PostAsync("Received Message Response Request", "a4165ae5f7ad5ab682e2c3dd52");
             return HttpStatusCode.OK;
         }
 
