@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Net;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using GroupMeBot.Model;
@@ -43,7 +37,7 @@ public class MessageBot
         Log.LogInformation("MessageBot-HandleIncomingTextAsync method start");
         if (_message.Text == null)
         {
-            Log.LogInformation("MessageBot-message.text is null");
+            Log.LogWarning("MessageBot-message.text is null");
             return HttpStatusCode.BadRequest;
         }
 
@@ -60,5 +54,24 @@ public class MessageBot
         Log.LogInformation("MessageBot-no regex match bad request");
         return HttpStatusCode.BadRequest;
     }
+
+    //public async Task<HttpStatusCode> HandleIncomingLoganTextAsync()
+    //{
+    //    Log.LogInformation("MessageBot-HandleIncomingLoganTextAsync method start");
+    //    if (_message.Text == null)
+    //    {
+    //        Log.LogWarning("MessageBot-message.text is null");
+    //        return HttpStatusCode.BadRequest;
+    //    }
+
+    //    Log.LogInformation("MessageBot-Logan Text attempt regex match");
+    //    Match regexMatch = BotCannedResponseRegex.Match(_message.Text);
+    //    if (regexMatch.Success)
+    //    {
+    //        Log.LogInformation("MessageBot-regex match was a success");
+    //        await MessageOutgoing.PostAsync("Received Message Response Request", "a4165ae5f7ad5ab682e2c3dd52");
+    //        return HttpStatusCode.OK;
+    //    }
+    //}
 
 }

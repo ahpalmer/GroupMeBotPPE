@@ -53,6 +53,10 @@ public class MessageIncoming : IMessageIncoming
             log.LogInformation($"Parse Incoming Request-returning OKObjectResult No response required, message is from bot");
             return new OkObjectResult("No response required, message is from bot");
         }
+        //else if (Message.UserId == "")
+        //{
+
+        //}
 
         if (Message.Text == null)
         {

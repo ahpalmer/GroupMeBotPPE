@@ -8,9 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using GroupMeBot.Model;
-using System.Text;
-using System.Runtime.CompilerServices;
-using System.Linq;
 
 namespace GroupMeBot.Controller;
 
@@ -35,7 +32,7 @@ public class BasicResponse
         //req.HttpContext.Response.StatusCode = 418;
 
         log.LogInformation($"GroupMeBot trigger message attempt to parse incoming request:");
-        var httpResponse = await incMessage.ParseIncomingRequestAsync();
+        IActionResult httpResponse = await incMessage.ParseIncomingRequestAsync();
 
         try
         {

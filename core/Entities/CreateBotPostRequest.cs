@@ -1,9 +1,4 @@
-﻿using System;
-using System.Net.Mail;
-using System.Runtime.Serialization;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Xml.Linq;
+﻿using System.Runtime.Serialization;
 
 namespace GroupMeBot.Model;
 
