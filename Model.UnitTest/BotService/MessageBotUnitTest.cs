@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 using GroupMeBot.Model;
 using System.Text.RegularExpressions;
 using System.Net;
@@ -19,7 +14,26 @@ public class MessageBotUnitTest
     private const string _botPostUrl = "https://api.groupme.com/v3/bots/post";
     public ILogger Logger { get; set; }
 
+    [TestMethod]
+    public void RetrieveRandomResponseAnonymous()
+    {
+        //Arrange
+        MessageItem messageItem = new MessageItem("Bot message response");
+        var mockLogger = new Mock<ILogger>();
+        var MessageBot = new MessageBot(messageItem, mockLogger.Object);
 
+        string[] anonymousResponses = new string[]
+        {
+            "This is an anonymous response",
+            "Yes",
+            "Sure",
+            "All signs point to no"
+        };
+
+        string anonymous = MessageBot.RetrieveRandomResponse();
+
+        Assert.AreEqual(true, anonymousResponses.Contains(anonymous));
+    }
 
     [TestMethod]
     public void HandleIncomingMessage_GoodInput_ReturnHttpOk()

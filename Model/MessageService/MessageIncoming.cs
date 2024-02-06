@@ -16,6 +16,8 @@ public class MessageIncoming : IMessageIncoming
     private static readonly Regex BotAnalysisRegex = new Regex(@"((?i)(\bbot\b.*\banalysis\b)|(\banalysis\b.*\bbot\b)(?-i))");
     private static readonly Regex BotMessageRegex = new Regex(@"((?i)(\bbot\b.*\bmessage\b)|(\bmessage\b.*\bbot\b)(?-i))");
     public ILogger log { get; private set; }
+    private const string _botId = "a4165ae5f7ad5ab682e2c3dd52";
+
 
     public MessageIncoming(HttpRequest req, ILogger logger)
     {
@@ -48,16 +50,11 @@ public class MessageIncoming : IMessageIncoming
             log.LogInformation($"Parse Incoming Request-Message text content: {Message.Text}");
         }
 
-        if (Message.UserId == "a4165ae5f7ad5ab682e2c3dd52")
+        if (Message.UserId == _botId)
         {
             log.LogInformation($"Parse Incoming Request-returning OKObjectResult No response required, message is from bot");
             return new OkObjectResult("No response required, message is from bot");
         }
-        //else if (Message.UserId == "")
-        //{
-
-        //}
-
         if (Message.Text == null)
         {
             log.LogInformation($"Parse Incoming Request-returning BadRequestObjectResult No text was received");
@@ -70,7 +67,7 @@ public class MessageIncoming : IMessageIncoming
         {
             log.LogInformation($"Parse Incoming Request-analysis regex match successful");
             AnalysisBot analysisBot = new AnalysisBot(Message, log);
-            //Run analysis code
+            // Todo: create method: analysisBot.RunAnalysis()
             return new OkObjectResult(analysisBot);
         }
 
@@ -79,6 +76,7 @@ public class MessageIncoming : IMessageIncoming
         {
             log.LogInformation($"Parse Incoming Request-regex match successful");
             MessageBot messageBot = new MessageBot(Message, log);
+
 
             log.LogInformation($"Parse Incoming Request-HandleIncomingTextAsync");
             var status = await messageBot.HandleIncomingTextAsync();
@@ -99,7 +97,7 @@ public class MessageIncoming : IMessageIncoming
     }
 
 
-    public async Task<string> ParseIncomingHeadersAsync()
+    public string ParseIncomingHeadersAsync()
     {
         if (_req == null)
         {

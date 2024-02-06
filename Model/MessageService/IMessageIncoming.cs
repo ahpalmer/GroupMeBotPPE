@@ -16,6 +16,6 @@ public interface IMessageIncoming
     /// Parses an incoming http request and prints out all of the req headers
     /// </summary>
     /// <returns>will return a string of all of the headers</returns>
-    public Task<string> ParseIncomingHeadersAsync();
+    public string ParseIncomingHeadersAsync();
 
 }

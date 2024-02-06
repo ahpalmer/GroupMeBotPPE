@@ -6,19 +6,23 @@ using System.Threading.Tasks;
 
 namespace GroupMeBot.Controller;
 
+// Todo: Useless code right now.  Delete after you get the new send code up and running.
 public class SendResponse
 {
+    private const string _botId = "a4165ae5f7ad5ab682e2c3dd52";
+
     public static HttpClient sharedClient = new()
     {
         BaseAddress = new Uri("https://api.groupme.com/v3/bots/post"),
     };
 
+    // Todo: this method is never referenced
     public static async Task PostAsync(HttpClient httpClient)
     {
         using StringContent jsonContent = new(
         JsonSerializer.Serialize(new
         {
-            bot_id = "a4165ae5f7ad5ab682e2c3dd52",
+            bot_id = _botId,
             text = "Hello world"
         }),
         Encoding.UTF8,
@@ -32,7 +36,7 @@ public class SendResponse
         Console.WriteLine($"{jsonResponse}\n");
     }
 
-
+    // Todo: Complete this feature or delete it.
     //public static async Task Run(HttpRequest req, ILogger log)
     //{
     //    using (HttpClient client = new HttpClient())

@@ -28,12 +28,10 @@ public class BasicResponse
         log.LogInformation("GroupMeBot trigger processed a request.");
         MessageIncoming incMessage = new MessageIncoming(req, log);
 
-        //Is this how to send a response?!?
-        //req.HttpContext.Response.StatusCode = 418;
-
         log.LogInformation($"GroupMeBot trigger message attempt to parse incoming request:");
         IActionResult httpResponse = await incMessage.ParseIncomingRequestAsync();
 
+        // Todo: Reorganize this or delete it.
         try
         {
             string text = incMessage.Message.Text;
