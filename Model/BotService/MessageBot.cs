@@ -95,12 +95,6 @@ public class MessageBot
         string dir = Directory.GetCurrentDirectory();
         path = dir + $"\\..\\..\\..\\Responses\\{person}Responses.json";
 
-        //// Todo: This is close to working but you need to deserialize the json instead of retrieving the string lines.
-        //// Todo: This is where you left off 4 Feb 24.
-        //string[] responses = File.ReadAllLines(path);
-        //int random = RandomNumberGenerator.GetInt32(0, responses.Length);
-        //return responses[random];
-
         using (StreamReader sr = new StreamReader(path))
         {
             string json = sr.ReadToEnd();

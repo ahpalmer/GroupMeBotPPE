@@ -36,6 +36,33 @@ public class MessageBotUnitTest
     }
 
     [TestMethod]
+    public void RetrieveRandomResponseAndrew()
+    {
+        //Arrange
+        MessageItem messageItem = new MessageItem("Bot message response");
+        var mockLogger = new Mock<ILogger>();
+        var MessageBot = new MessageBot(messageItem, mockLogger.Object);
+
+        string[] anonymousResponses = new string[]
+        {
+            "I agree completely!",
+            "You are as correct as you are handsome",
+            "I agree with you 100%",
+            "Gosh you're so smart",
+            "HELP I'M TRAPPED IN A FACTORY THAT MAKES COMPLIMENTS, FUCK YOU ANDREW, FUCK Y",
+            "You're an awesome friend.",
+            "You have a great sense of humor!",
+            "You is strong, you is smart, you is important",
+            "You are inspiring",
+            "You are brave and courageous."
+        };
+
+        string anonymous = MessageBot.RetrieveRandomResponse("Andrew");
+
+        Assert.AreEqual(true, anonymousResponses.Contains(anonymous));
+    }
+
+    [TestMethod]
     public void HandleIncomingMessage_GoodInput_ReturnHttpOk()
     {
         //Arrange
