@@ -46,43 +46,19 @@ public class MessageBot
             return HttpStatusCode.BadRequest;
         }
 
-        // Todo: Delete this once HandleIncomingText is working
-        //Log.LogInformation("MessageBot-attempt regex match");
-        //Match regexMatch = BotCannedResponseRegex.Match(_message.Text);
-        //if (regexMatch.Success)
-        //{
-        //    Log.LogInformation("MessageBot-regex match was a success");
-        //    // TODO: More logic that will handle HTTPStatuscodes from the botposter class
-        //    await MessageOutgoing.PostAsync("Received Message Response Request", _botId);
-        //    return HttpStatusCode.OK;
-        //}
-
         // Todo: Make this into a bitwise operator (?)
-        if (_message.UserId == "Andrew") return await HandleAndrewTextAsync();
-        else if (_message.UserId == "Logan") return await HandleLoganTextAsync();
-        else return await HandleAnonymousTextAsync();
+        if (_message.UserId == "Andrew") return await ChooseUniqueUserTextAsync("Andrew");
+        else if (_message.UserId == "Logan") return await ChooseUniqueUserTextAsync("Logan");
+        else if (_message.UserId == "Sean") return await ChooseUniqueUserTextAsync("Sean");
+        else if (_message.UserId == "Jordan") return await ChooseUniqueUserTextAsync("Jordan");
+        else if (_message.UserId == "Hayden") return await ChooseUniqueUserTextAsync("Hayden");
+        else return await ChooseUniqueUserTextAsync();
     }
 
-    public async Task<HttpStatusCode> HandleAnonymousTextAsync()
+    public async Task<HttpStatusCode> ChooseUniqueUserTextAsync(string user = "")
     {
         Log.LogInformation("MessageBot-HandleAndrewTextAsync method start");
-        string response = RetrieveRandomResponse();
-
-        return await MessageOutgoing.PostAsync($"{response}", _botId);
-    }
-
-    public async Task<HttpStatusCode> HandleAndrewTextAsync()
-    {
-        Log.LogInformation("MessageBot-HandleAndrewTextAsync method start");
-        string response = RetrieveRandomResponse("Andrew");
-
-        return await MessageOutgoing.PostAsync($"{response}", _botId);
-    }
-
-    public async Task<HttpStatusCode> HandleLoganTextAsync()
-    {
-        Log.LogInformation("MessageBot-HandleLoganTextAsync method start");
-        string response = RetrieveRandomResponse("Logan");
+        string response = RetrieveRandomResponse(user);
 
         return await MessageOutgoing.PostAsync($"{response}", _botId);
     }

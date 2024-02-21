@@ -12,7 +12,6 @@ public class MessageBotUnitTest
 {
     private static readonly Regex BotCannedResponseRegex = new Regex(@"((?i)(?=.*\bbot\b)(?=.*\bmessage\b)(?=.*\bresponse\b)(?-i))");
     private const string _botPostUrl = "https://api.groupme.com/v3/bots/post";
-    public ILogger Logger { get; set; }
 
     [TestMethod]
     public void RetrieveRandomResponseAnonymous()

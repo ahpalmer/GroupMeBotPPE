@@ -11,6 +11,7 @@ using GroupMeBot.Model;
 
 namespace GroupMeBot.Controller;
 
+// Todo: update to Net 8.0
 public class BasicResponse
 {
     private const string BotPostUrl = "https://api.groupme.com/v3/bots/post";
