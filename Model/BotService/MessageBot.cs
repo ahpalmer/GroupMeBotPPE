@@ -47,11 +47,11 @@ public class MessageBot
         }
 
         // Todo: Make this into a bitwise operator (?)
-        if (_message.UserId == "Andrew") return await ChooseUniqueUserTextAsync("Andrew");
-        else if (_message.UserId == "Logan") return await ChooseUniqueUserTextAsync("Logan");
-        else if (_message.UserId == "Sean") return await ChooseUniqueUserTextAsync("Sean");
-        else if (_message.UserId == "Jordan") return await ChooseUniqueUserTextAsync("Jordan");
-        else if (_message.UserId == "Hayden") return await ChooseUniqueUserTextAsync("Hayden");
+        if (_message.UserId == "4635437") return await ChooseUniqueUserTextAsync("Andrew");
+        else if (_message.UserId == "20597076") return await ChooseUniqueUserTextAsync("Logan");
+        else if (_message.UserId == "7663415") return await ChooseUniqueUserTextAsync("Sean");
+        else if (_message.UserId == "11900950") return await ChooseUniqueUserTextAsync("Jordan");
+        else if (_message.UserId == "84706251") return await ChooseUniqueUserTextAsync("Hayden");
         else return await ChooseUniqueUserTextAsync();
     }
 
