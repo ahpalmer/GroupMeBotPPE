@@ -76,7 +76,7 @@ public class MessageBotUnitTest
         HttpStatusCode result = MessageBot.HandleIncomingTextAsync().Result;
 
         //Assert
-        Assert.AreEqual(HttpStatusCode.OK, result);
+        Assert.AreEqual(HttpStatusCode.Accepted, result);
     }
 
     [TestMethod]
