@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Model.BotService;
 
-public class MessageBot
+public class MessageBot : IMessageBot
 {
     private MessageItem _message { get; set; }
     private static readonly Regex BotCannedResponseRegex = new Regex(@"((?i)(?=.*\bbot\b)(?=.*\bmessage\b)(?=.*\bresponse\b)(?-i))");
