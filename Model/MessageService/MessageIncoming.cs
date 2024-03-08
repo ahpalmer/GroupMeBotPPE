@@ -12,18 +12,20 @@ namespace GroupMeBot.Model;
 public class MessageIncoming : IMessageIncoming
 {
     public MessageItem Message { get; set; }
+    public ILogger log { get; private set; }
+
     private readonly HttpRequest _req;
     private static readonly Regex BotAnalysisRegex = new Regex(@"((?i)(\bbot\b.*\banalysis\b)|(\banalysis\b.*\bbot\b)(?-i))");
     private static readonly Regex BotMessageRegex = new Regex(@"((?i)(\bbot\b.*\bmessage\b)|(\bmessage\b.*\bbot\b)(?-i))");
-    public ILogger log { get; private set; }
     private const string _botId = "a4165ae5f7ad5ab682e2c3dd52";
 
 
     public MessageIncoming(HttpRequest req, ILogger logger)
     {
         _req = req;
-        Message = new MessageItem();
         log = logger;
+        // Todo: create a messageItem in DI container instead of instantiating here
+        Message = new MessageItem();
     }
 
     public async Task<IActionResult> ParseIncomingRequestAsync()
@@ -34,7 +36,7 @@ public class MessageIncoming : IMessageIncoming
             return new BadRequestObjectResult("No request was received");
         }
 
-        //This is the problem.  I am not putting the text 
+        // This is the problem.  The program stops working here?
         string content = string.Empty;
         using (StreamReader sr = new StreamReader(_req.Body))
         {
