@@ -17,6 +17,7 @@ public class Startup : FunctionsStartup
         builder.Services.AddSingleton<IMessageOutgoing, MessageOutgoing>();
         builder.Services.AddSingleton<IAnalysisBot, AnalysisBot>();
         builder.Services.AddSingleton<IMessageBot, MessageBot>();
+        builder.Services.AddModel();
         // Todo: add MessageItem to DI
         // Todo: don't forget to remove MessageItem from MessageBot constructor
     }
