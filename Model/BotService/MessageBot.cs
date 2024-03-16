@@ -5,20 +5,22 @@ using GroupMeBot.Model;
 using System.Security.Cryptography;
 using Newtonsoft.Json;
 
-namespace Model.BotService;
+namespace GroupMeBot.Model;
 
 public class MessageBot : IMessageBot
 {
     private IMessageOutgoing _messageOutgoing;
+    private ResponseFilePaths _responseFilePaths;
     private ILogger _log;
 
     private static readonly Regex _botCannedResponseRegex = new Regex(@"((?i)(?=.*\bbot\b)(?=.*\bmessage\b)(?=.*\bresponse\b)(?-i))");
     private const string _botPostUrl = "https://api.groupme.com/v3/bots/post";
     private const string _botId = "a4165ae5f7ad5ab682e2c3dd52";
 
-    public MessageBot(IMessageOutgoing messageOutgoing, ILogger log)
+    public MessageBot(IMessageOutgoing messageOutgoing, ResponseFilePaths responseFilePaths, ILogger log)
     {
         _messageOutgoing = messageOutgoing;
+        _responseFilePaths = responseFilePaths;
         _log = log;
     }
 
@@ -53,7 +55,32 @@ public class MessageBot : IMessageBot
         try
         {
             _log.LogInformation($"MessageBot-ChooseUniqueUserTextAsync method start for user: {user}");
-            string response = RetrieveRandomResponse(user);
+            string path;
+
+            switch (user)
+            {
+                case "Andrew":
+                    path = _responseFilePaths.Andrew;
+                    break;
+                case "Logan":
+                    path = _responseFilePaths.Logan;
+                    break;
+                case "Sean":
+                    path = _responseFilePaths.Sean;
+                    break;
+                case "Jordan":
+                    path = _responseFilePaths.Jordan;
+                    break;
+                case "Hayden":
+                    path = _responseFilePaths.Hayden;
+                    break;
+                default:
+                    path = _responseFilePaths.Responses;
+                    break;
+            }
+
+            string response = RetrieveRandomResponse(path);
+
             _log.LogInformation($"MessageBot-Response for user: {user} retrieved: {response}");
 
             return await _messageOutgoing.PostAsync($"{response}", _botId);
@@ -66,17 +93,18 @@ public class MessageBot : IMessageBot
     }
 
 
-    public string RetrieveRandomResponse(string person = "")
+    public string RetrieveRandomResponse(string person)
     {
         try
         {
             _log.LogInformation("RetrieveRandomResponse");
-            string path;
 
-            string dir = Directory.GetCurrentDirectory();
-            path = dir + $"\\..\\..\\..\\Responses\\{person}Responses.json";
+            //string dir = Directory.GetCurrentDirectory();
+            //path = dir + $"\\..\\..\\..\\Responses\\{person}Responses.json";
 
-            using (StreamReader sr = new StreamReader(path))
+
+
+            using (StreamReader sr = new StreamReader(person))
             {
                 string json = sr.ReadToEnd();
                 List<string> responses = JsonConvert.DeserializeObject<List<string>>(json)!;

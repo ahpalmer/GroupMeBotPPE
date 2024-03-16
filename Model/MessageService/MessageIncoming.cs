@@ -5,7 +5,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Model.BotService;
 
 namespace GroupMeBot.Model;
 
@@ -43,45 +42,41 @@ public class MessageIncoming : IMessageIncoming
             content = await sr.ReadToEndAsync();
         }
 
-        MessageItem Message = new MessageItem();
+        MessageItem message = new MessageItem();
 
         _logger.LogInformation($"Parse Incoming Request-read HttpRequest: {content}");
         if (content != null)
         {
-            Message = JsonConvert.DeserializeObject<MessageItem>(content)!;
-            _logger.LogInformation($"Parse Incoming Request-Message text content: {Message.Text}");
+            message = JsonConvert.DeserializeObject<MessageItem>(content)!;
+            _logger.LogInformation($"Parse Incoming Request-Message text content: {message.Text}");
         }
 
-        if (Message.UserId == _botId)
+        if (message.UserId == _botId)
         {
             _logger.LogInformation($"Parse Incoming Request-returning OKObjectResult No response required, message is from bot");
             return new OkObjectResult("No response required, message is from bot");
         }
-        if (Message.Text == null)
+        if (message.Text == null)
         {
             _logger.LogInformation($"Parse Incoming Request-returning BadRequestObjectResult No text was received");
             return new BadRequestObjectResult("No text was received");
         }
 
         _logger.LogInformation($"Parse Incoming Request-attempting regex match");
-        Match analysisRegex = _botAnalysisRegex.Match(Message.Text);
+        Match analysisRegex = _botAnalysisRegex.Match(message.Text);
         if (analysisRegex.Success)
         {
             _logger.LogInformation($"Parse Incoming Request-analysis regex match successful");
-            AnalysisBot analysisBot = new AnalysisBot(Message, _logger);
-            // Todo: create method: analysisBot.RunAnalysis()
-            return new OkObjectResult(analysisBot);
+            return new OkObjectResult(_analysisBot);
         }
 
-        Match messageRegex = _botMessageRegex.Match(Message.Text);
+        Match messageRegex = _botMessageRegex.Match(message.Text);
         if (messageRegex.Success)
         {
             _logger.LogInformation($"Parse Incoming Request-regex match successful");
-            MessageBot messageBot = new MessageBot(Message, _logger);
-
 
             _logger.LogInformation($"Parse Incoming Request-HandleIncomingTextAsync");
-            var status = await messageBot.HandleIncomingTextAsync();
+            var status = await _messageBot.HandleIncomingTextAsync(message);
             if (status == HttpStatusCode.OK)
             {
                 _logger.LogInformation($"Parse Incoming Request-returning OKObjectResult because HttpStatusCode Ok");

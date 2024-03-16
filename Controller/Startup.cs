@@ -3,11 +3,10 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Model.BotService;
 
-[assembly: FunctionsStartup(typeof(Controller.Startup))]
+[assembly: FunctionsStartup(typeof(GroupMeBot.Controller.Startup))]
 
-namespace Controller;
+namespace GroupMeBot.Controller;
 
 public class Startup : FunctionsStartup
 {
@@ -25,17 +24,17 @@ public class Startup : FunctionsStartup
         // Register HttpClient
         builder.Services.AddHttpClient();
 
-        // Register services
-        builder.Services.AddSingleton<IAnalysisBot, AnalysisBot>();
-        builder.Services.AddSingleton<IMessageBot, MessageBot>();
-        builder.Services.AddSingleton<IMessageIncoming, MessageIncoming>();
+        // Add JSON responses as DI singletons
+        var responseFilePathsConfig = configuration.GetSection("ResponseFilePaths").Get<ResponseFilePaths>();
 
         // Retrieve the BotPostUrl from configuration
         var botPostUrl = configuration["BotPostUrl"];
 
-        // Register MessageOutgoing with BotPostUrl from configuration
+        // Register services
+        builder.Services.AddSingleton<IAnalysisBot, AnalysisBot>();
+        builder.Services.AddSingleton<IMessageBot, MessageBot>();
+        builder.Services.AddSingleton<IMessageIncoming, MessageIncoming>();
+        builder.Services.AddSingleton(responseFilePathsConfig);
         builder.Services.AddSingleton<IMessageOutgoing>(provider => new MessageOutgoing(botPostUrl));
-
-        // Todo: add all JSON responses as DI singletons
     }
 }

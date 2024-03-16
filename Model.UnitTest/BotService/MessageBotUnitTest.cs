@@ -2,7 +2,6 @@
 using GroupMeBot.Model;
 using System.Text.RegularExpressions;
 using System.Net;
-using Model.BotService;
 using Microsoft.Extensions.Logging;
 
 namespace GroupmeBot.Model.UnitTest;
@@ -19,7 +18,10 @@ public class MessageBotUnitTest
         //Arrange
         MessageItem messageItem = new MessageItem("Bot message response");
         var mockLogger = new Mock<ILogger>();
-        var MessageBot = new MessageBot(messageItem, mockLogger.Object);
+        var mockMessageOutgoing = new Mock<IMessageOutgoing>();
+        var mockResponseFilePaths = new Mock<ResponseFilePaths>();
+
+        var MessageBot = new MessageBot(mockMessageOutgoing.Object, mockResponseFilePaths.Object, mockLogger.Object);
 
         string[] anonymousResponses = new string[]
         {
@@ -29,7 +31,7 @@ public class MessageBotUnitTest
             "All signs point to no"
         };
 
-        string anonymous = MessageBot.RetrieveRandomResponse();
+        string anonymous = MessageBot.RetrieveRandomResponse("Andrew");
 
         Assert.AreEqual(true, anonymousResponses.Contains(anonymous));
     }
@@ -40,7 +42,10 @@ public class MessageBotUnitTest
         //Arrange
         MessageItem messageItem = new MessageItem("Bot message response");
         var mockLogger = new Mock<ILogger>();
-        var MessageBot = new MessageBot(messageItem, mockLogger.Object);
+        var mockMessageOutgoing = new Mock<IMessageOutgoing>();
+        var mockResponseFilePaths = new Mock<ResponseFilePaths>();
+
+        var MessageBot = new MessageBot(mockMessageOutgoing.Object, mockResponseFilePaths.Object, mockLogger.Object);
 
         string[] anonymousResponses = new string[]
         {
@@ -67,13 +72,16 @@ public class MessageBotUnitTest
         //Arrange
         MessageItem messageItem = new MessageItem("Bot message response");
         var mockLogger = new Mock<ILogger>();
-        var MessageBot = new MessageBot(messageItem, mockLogger.Object);
         var mockMessageOutgoing = new Mock<IMessageOutgoing>();
+        var mockResponseFilePaths = new Mock<ResponseFilePaths>();
 
         mockMessageOutgoing.Setup(_ => _.PostAsync("Received Message Response Request", "a4165ae5f7ad5ab682e2c3dd52")).ReturnsAsync(HttpStatusCode.OK);
 
+        var MessageBot = new MessageBot(mockMessageOutgoing.Object, mockResponseFilePaths.Object, mockLogger.Object);
+
+
         //Act
-        HttpStatusCode result = MessageBot.HandleIncomingTextAsync().Result;
+        HttpStatusCode result = MessageBot.HandleIncomingTextAsync(messageItem).Result;
 
         //Assert
         Assert.AreEqual(HttpStatusCode.Accepted, result);
@@ -85,13 +93,15 @@ public class MessageBotUnitTest
         //Arrange
         MessageItem messageItem = new MessageItem("Test message");
         var mockLogger = new Mock<ILogger>();
-        var MessageBot = new MessageBot(messageItem, mockLogger.Object);
         var mockMessageOutgoing = new Mock<IMessageOutgoing>();
+        var mockResponseFilePaths = new Mock<ResponseFilePaths>();
 
         mockMessageOutgoing.Setup(_ => _.PostAsync("Received Message Response Request", "a4165ae5f7ad5ab682e2c3dd52")).ReturnsAsync(HttpStatusCode.OK);
 
+        var MessageBot = new MessageBot(mockMessageOutgoing.Object, mockResponseFilePaths.Object, mockLogger.Object);
+
         //Act
-        HttpStatusCode result = MessageBot.HandleIncomingTextAsync().Result;
+        HttpStatusCode result = MessageBot.HandleIncomingTextAsync(messageItem).Result;
 
         //Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, result);
