@@ -24,8 +24,7 @@ public class Startup : FunctionsStartup
         // Register HttpClient
         builder.Services.AddHttpClient();
 
-        // Add JSON responses as DI singletons
-        var responseFilePathsConfig = configuration.GetSection("ResponseFilePaths").Get<ResponseFilePaths>();
+
 
         // Retrieve the BotPostUrl from configuration
         var botPostUrl = configuration["BotPostUrl"];
@@ -34,7 +33,11 @@ public class Startup : FunctionsStartup
         builder.Services.AddSingleton<IAnalysisBot, AnalysisBot>();
         builder.Services.AddSingleton<IMessageBot, MessageBot>();
         builder.Services.AddSingleton<IMessageIncoming, MessageIncoming>();
-        builder.Services.AddSingleton(responseFilePathsConfig);
         builder.Services.AddSingleton<IMessageOutgoing>(provider => new MessageOutgoing(botPostUrl));
+
+        // Add JSON responses as DI singletons.  
+        // Todo: not working right now
+        var responseFilePathsConfig = configuration.GetSection("ResponseFilePaths").Get<ResponseFilePaths>();
+        builder.Services.AddSingleton(responseFilePathsConfig);
     }
 }
