@@ -5,58 +5,47 @@ using GroupMeBot.Model;
 using System.Security.Cryptography;
 using Newtonsoft.Json;
 
-namespace Model.BotService;
+namespace GroupMeBot.Model;
 
-public class MessageBot
+public class MessageBot : IMessageBot
 {
-    private MessageItem _message { get; set; }
-    private static readonly Regex BotCannedResponseRegex = new Regex(@"((?i)(?=.*\bbot\b)(?=.*\bmessage\b)(?=.*\bresponse\b)(?-i))");
     private IMessageOutgoing _messageOutgoing;
-    private const string _botPostUrl = "https://api.groupme.com/v3/bots/post";
+    private ResponseFilePaths _responseFilePaths;
     private ILogger _log;
+
+    private static readonly Regex _botCannedResponseRegex = new Regex(@"((?i)(?=.*\bbot\b)(?=.*\bmessage\b)(?=.*\bresponse\b)(?-i))");
+    private const string _botPostUrl = "https://api.groupme.com/v3/bots/post";
     private const string _botId = "a4165ae5f7ad5ab682e2c3dd52";
 
-    public MessageBot(MessageItem message, ILogger log)
+    public MessageBot(IMessageOutgoing messageOutgoing, ResponseFilePaths responseFilePaths, ILogger log)
     {
-        _message = message;
-        _messageOutgoing = new MessageOutgoing(_botPostUrl);
+        _messageOutgoing = messageOutgoing;
+        _responseFilePaths = responseFilePaths;
         _log = log;
     }
 
-    public ILogger Log
-    {
-        get { return _log; }
-        set { _log = value; }
-    }
-
-    // TODO: Convert to DI
-    public IMessageOutgoing MessageOutgoing
-    {
-        get { return _messageOutgoing; }
-    }
-
-    public async Task<HttpStatusCode> HandleIncomingTextAsync()
+    public async Task<HttpStatusCode> HandleIncomingTextAsync(MessageItem message)
     {
         try
         {
-            Log.LogInformation("MessageBot-HandleIncomingTextAsync method start");
-            if (_message.Text == null)
+            _log.LogInformation("MessageBot-HandleIncomingTextAsync method start");
+            if (message.Text == null)
             {
-                Log.LogWarning("MessageBot-message.text is null");
+                _log.LogWarning("MessageBot-message.text is null");
                 return HttpStatusCode.BadRequest;
             }
 
             // Todo: Make this into a bitwise operator (?)
-            if (_message.UserId == "4635437") return await ChooseUniqueUserTextAsync("Andrew");
-            else if (_message.UserId == "20597076") return await ChooseUniqueUserTextAsync("Logan");
-            else if (_message.UserId == "7663415") return await ChooseUniqueUserTextAsync("Sean");
-            else if (_message.UserId == "11900950") return await ChooseUniqueUserTextAsync("Jordan");
-            else if (_message.UserId == "84706251") return await ChooseUniqueUserTextAsync("Hayden");
+            if (message.UserId == "4635437") return await ChooseUniqueUserTextAsync("Andrew");
+            else if (message.UserId == "20597076") return await ChooseUniqueUserTextAsync("Logan");
+            else if (message.UserId == "7663415") return await ChooseUniqueUserTextAsync("Sean");
+            else if (message.UserId == "11900950") return await ChooseUniqueUserTextAsync("Jordan");
+            else if (message.UserId == "84706251") return await ChooseUniqueUserTextAsync("Hayden");
             else return await ChooseUniqueUserTextAsync();
         }
         catch (Exception ex)
         {
-            Log.LogError($"MessageBot-HandleIncomingTextAsync method failed, {ex}");
+            _log.LogError($"MessageBot-HandleIncomingTextAsync method failed, {ex}");
             return HttpStatusCode.BadRequest;
         }
     }
@@ -65,32 +54,57 @@ public class MessageBot
     {
         try
         {
-            Log.LogInformation($"MessageBot-ChooseUniqueUserTextAsync method start for user: {user}");
-            string response = RetrieveRandomResponse(user);
-            Log.LogInformation($"MessageBot-Response for user: {user} retrieved: {response}");
+            _log.LogInformation($"MessageBot-ChooseUniqueUserTextAsync method start for user: {user}");
+            string path;
 
-            return await MessageOutgoing.PostAsync($"{response}", _botId);
+            switch (user)
+            {
+                case "Andrew":
+                    path = _responseFilePaths.Andrew;
+                    break;
+                case "Logan":
+                    path = _responseFilePaths.Logan;
+                    break;
+                case "Sean":
+                    path = _responseFilePaths.Sean;
+                    break;
+                case "Jordan":
+                    path = _responseFilePaths.Jordan;
+                    break;
+                case "Hayden":
+                    path = _responseFilePaths.Hayden;
+                    break;
+                default:
+                    path = _responseFilePaths.Responses;
+                    break;
+            }
+
+            string response = RetrieveRandomResponse(path);
+
+            _log.LogInformation($"MessageBot-Response for user: {user} retrieved: {response}");
+
+            return await _messageOutgoing.PostAsync($"{response}", _botId);
         }
         catch(Exception ex)
         {
-            Log.LogError($"MessageBot-ChooseUniqueUserTextAsync method failed, {ex}");
+            _log.LogError($"MessageBot-ChooseUniqueUserTextAsync method failed, {ex}");
             return HttpStatusCode.BadRequest;
         }
-
     }
 
 
-    public string RetrieveRandomResponse(string person = "")
+    public string RetrieveRandomResponse(string person)
     {
         try
         {
-            Log.LogInformation("RetrieveRandomResponse");
-            string path;
+            _log.LogInformation("RetrieveRandomResponse");
 
-            string dir = Directory.GetCurrentDirectory();
-            path = dir + $"\\..\\..\\..\\Responses\\{person}Responses.json";
+            //string dir = Directory.GetCurrentDirectory();
+            //path = dir + $"\\..\\..\\..\\Responses\\{person}Responses.json";
 
-            using (StreamReader sr = new StreamReader(path))
+
+
+            using (StreamReader sr = new StreamReader(person))
             {
                 string json = sr.ReadToEnd();
                 List<string> responses = JsonConvert.DeserializeObject<List<string>>(json)!;
@@ -100,7 +114,8 @@ public class MessageBot
         }
         catch(Exception ex)
         {
-            Log.LogError($"MessageBot-RetrieveRandomResponse method failed, {ex}");
+            _log.LogError($"MessageBot-RetrieveRandomResponse method failed, {ex}");
+            // Todo: bad return
             return null;
         }
     }

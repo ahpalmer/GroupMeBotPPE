@@ -2,11 +2,9 @@
 
 namespace GroupMeBot.Model;
 
-/// <summary>
-/// A generic message item from the server - support for group and direct messages
-/// </summary>
+/// <inheritdoc/>
 [DataContract]
-public class MessageItem
+public class MessageItem : IMessageItem
 {
     public MessageItem() 
     {
@@ -16,57 +14,40 @@ public class MessageItem
     {
         Text = text;
     }
-    /// <summary>
-    /// Gets or sets the the server ID for this message
-    /// </summary>
+
+    /// <inheritdoc/>
     [DataMember(Name = "serverId", EmitDefaultValue = false)]
     public string? MessageId { get; set; }
 
-    /// <summary>
-    /// Gets or sets the ID of the group to which this message belongs (group only)
-    /// </summary>
+    /// <inheritdoc/>
     [DataMember(Name = "groupId", EmitDefaultValue = false)]
     public string? GroupId { get; set; }
 
-    /// <summary>
-    /// Gets or sets the ID of the user that sent the message
-    /// </summary>
+    /// <inheritdoc/>
     [DataMember(Name = "userId", EmitDefaultValue = false)]
     public string? UserId { get; set; }
 
-    /// <summary>
-    /// Gets or sets the display name of the user who sent this message
-    /// </summary>
+    /// <inheritdoc/>
     [DataMember(Name = "displayName", EmitDefaultValue = false)]
     public string? DisplayName { get; set; }
 
-    /// <summary>
-    /// Gets or sets the Text of the message
-    /// </summary>
+    /// <inheritdoc/>
     [DataMember(Name = "text", EmitDefaultValue = false)]
     public string? Text { get; set; }
 
-    /// <summary>
-    /// Gets or sets the list of users that have liked this message
-    /// </summary>
+    /// <inheritdoc/>
     [DataMember(Name = "favorited_by", EmitDefaultValue = false)]
     public string[]? LikedBy { get; set; }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether the message was sent by the system or not
-    /// </summary>
+    /// <inheritdoc/>
     [DataMember(Name = "system", EmitDefaultValue = false)]
     public bool? IsSystem { get; set; }
 
-    /// <summary>
-    /// Gets or sets the ID of the system that sent the message
-    /// </summary>
+    /// <inheritdoc/>
     [DataMember(Name = "sender_id", EmitDefaultValue = false)]
     public string? SystemSenderId { get; set; }
 
-    /// <summary>
-    /// Gets or sets the type of system that sent the message
-    /// </summary>
+    /// <inheritdoc/>
     [DataMember(Name = "sender_type", EmitDefaultValue = false)]
     public string? SystemSenderType { get; set; }
 }
