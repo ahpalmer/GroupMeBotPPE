@@ -5,6 +5,7 @@ VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model.UnitTest", "Model.UnitTest\Model.UnitTest.csproj", "{C40E8AA7-042C-4A7A-81BF-967A10ECB68E}"
 	ProjectSection(ProjectDependencies) = postProject
+		{226E7A9C-A34E-4986-A45A-4C907461D014} = {226E7A9C-A34E-4986-A45A-4C907461D014}
 		{6C148642-3F5C-410B-8309-06CAB917AA65} = {6C148642-3F5C-410B-8309-06CAB917AA65}
 	EndProjectSection
 EndProject
