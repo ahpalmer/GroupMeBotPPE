@@ -24,8 +24,6 @@ public class Startup : FunctionsStartup
         // Register HttpClient
         builder.Services.AddHttpClient();
 
-
-
         // Retrieve the BotPostUrl from configuration
         var botPostUrl = configuration["BotPostUrl"];
 
@@ -37,7 +35,10 @@ public class Startup : FunctionsStartup
 
         // Add JSON responses as DI singletons.  
         // Todo: not working right now
-        var responseFilePathsConfig = configuration.GetSection("ResponseFilePaths").Get<ResponseFilePaths>();
-        builder.Services.AddSingleton(responseFilePathsConfig);
+        //var responseFilePathsConfig = configuration.GetSection("ResponseFilePaths").Get<ResponseFilePaths>();
+        //builder.Services.AddSingleton(responseFilePathsConfig);
+
+        // Attempt 2:
+
     }
 }

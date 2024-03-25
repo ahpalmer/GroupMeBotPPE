@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using GroupMeBot.Model;
 using System.Security.Cryptography;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace GroupMeBot.Model;
 
@@ -99,20 +100,11 @@ public class MessageBot : IMessageBot
         {
             _log.LogInformation("RetrieveRandomResponse");
 
-            //string dir = Directory.GetCurrentDirectory();
-            //path = dir + $"\\..\\..\\..\\Responses\\{person}Responses.json";
-
-
-
-            using (StreamReader sr = new StreamReader(person))
-            {
-                string json = sr.ReadToEnd();
-                List<string> responses = JsonConvert.DeserializeObject<List<string>>(json)!;
-                int random = RandomNumberGenerator.GetInt32(0, responses.Count);
-                return responses[random].ToString();
-            }
+            List<string> responses = RetrieveSpecificPersonResponse(person);
+            int random = RandomNumberGenerator.GetInt32(0, responses.Count);
+            return responses[random].ToString();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _log.LogError($"MessageBot-RetrieveRandomResponse method failed, {ex}");
             // Todo: bad return
@@ -120,4 +112,96 @@ public class MessageBot : IMessageBot
         }
     }
 
+    public List<string> RetrieveSpecificPersonResponse(string person)
+    {
+        switch (person)
+        {
+            case "Andrew":
+                return new List<string>
+                {
+                    "I agree completely!",
+                    "You are as correct as you are handsome",
+                    "I agree with you 100%",
+                    "Gosh you're so smart",
+                    "HELP I'M TRAPPED IN A FACTORY THAT MAKES COMPLIMENTS, FUCK YOU ANDREW, FUCK Y",
+                    "You're an awesome friend.",
+                    "You have a great sense of humor!",
+                    "You is strong, you is smart, you is important",
+                    "You are inspiring",
+                    "You are brave and courageous."
+                };
+            case "Logan":
+                return new List<string>
+                {
+                    "No.",
+                    "Fuck you",
+                    "Not if you were the last guy on earth",
+                    "You have a face for radio",
+                    "I smell something burning.  Are you trying to think again?",
+                    "You are the Michael Jordan of assholes",
+                    "Don't worry, the first 31 years of childhood are the hardest"
+                };
+            case "Sean":
+                return new List<string>
+                {
+                    "...okay but only if you were the LAST guy on earth",
+                    "WHAT IN TARNATION",
+                    "I smell something burning.  Are you trying to think again?",
+                    "I disagree with everything you say",
+                    "I'm sorry, I can't hear you over the sound of how awesome I am.",
+                    "BRO, DO YOU EVEN LIFT?"
+                };
+            case "Jordan":
+                return new List<string>
+                {
+                    "WHAT IN TARNATION",
+                    "You have a lovely family and a big dumb brain!",
+                    "All signs point to no",
+                    "Absolutely No!",
+                    "Andrew is the best",
+                    "Dumb"
+                };
+            case "Hayden":
+                return new List<string>
+                {
+                    "All signs point to no",
+                    "Absolutely No!",
+                    "Andrew is the best",
+                    "Ask again later",
+                    "You have a face for radio",
+                    "You'd think the Secret Service woulda taught you to be less ugly"
+                };
+            // Todo: Compliments and insults might be unneccessary
+            case "Compliments":
+                return new List<string>
+                {
+                    "You are as correct as you are handsome",
+                    "I agree with you 100%",
+                    "Gosh you're so smart",
+                    "HELP I'M TRAPPED IN A FACTORY THAT MAKES COMPLIMENTS, FUCK YOU ANDREW, FUCK Y",
+                    "You're an awesome friend.",
+                    "You have a great sense of humor!",
+                    "You is strong, you is smart, you is important",
+                    "You are inspiring",
+                    "You are brave and courageous."
+                };
+            case "Insults":
+                return new List<string>
+                {
+                    "You have a face for radio",
+                    "I smell something burning.  Are you trying to think again?",
+                    "You are the Michael Jordan of assholes",
+                    "Don't worry, the first 31 years of childhood are the hardest",
+                    "Not if you were the last guy on earth"
+                };
+            default:
+                return new List<string>
+                {
+                    "This is an anonymous response",
+                    "Yes",
+                    "Sure",
+                    "All signs point to no"
+                };
+        }
+    }
 }

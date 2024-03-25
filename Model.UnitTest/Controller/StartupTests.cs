@@ -24,6 +24,12 @@ namespace GroupMeBot.Tests
             mockConfiguration.Setup(c => c["BotPostUrl"]).Returns("https://example.com/botpost");
             mockConfiguration.Setup(c => c.GetSection("ResponseFilePaths").Get<ResponseFilePaths>()).Returns(new ResponseFilePaths());
 
+            //var mockResponseFilePathsSection = new Mock<IConfigurationSection>();
+            //mockResponseFilePathsSection.Setup(s => s.Get<ResponseFilePaths>()).Returns(new ResponseFilePaths());
+
+            //mockConfiguration.Setup(c => c.GetSection("ResponseFilePaths")).Returns(mockResponseFilePathsSection.Object);
+
+
             var mockContext = new Mock<FunctionsHostBuilderContext>();
             mockContext.Setup(c => c.ApplicationRootPath).Returns(System.IO.Path.GetTempPath());
             mockBuilder.Setup(b => b.GetContext()).Returns(mockContext.Object);
