@@ -17,6 +17,9 @@
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 	<ItemGroup>
+		<Content Include="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

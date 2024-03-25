@@ -2,7 +2,9 @@
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 using Microsoft.Extensions.Logging;
+using System;
 
 [assembly: FunctionsStartup(typeof(GroupMeBot.Controller.Startup))]
 
@@ -12,26 +14,35 @@ public class Startup : FunctionsStartup
 {
     public override void Configure(IFunctionsHostBuilder builder)
     {
-        var context = builder.GetContext();
+        try
+        {
+            var context = builder.GetContext();
 
-        // Load configurations
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(context.ApplicationRootPath)
-            .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables()
-            .Build();
+            // Load configurations
+            IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(context.ApplicationRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{context.EnvironmentName}.json", optional: true)
+                //.AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                .Build();
 
-        // Register HttpClient
-        builder.Services.AddHttpClient();
+            // Register HttpClient
+            builder.Services.AddHttpClient();
 
-        // Retrieve the BotPostUrl from configuration
-        var botPostUrl = configuration["BotPostUrl"];
+            // Retrieve the BotPostUrl from configuration
+            var botPostUrl = configuration["BotPostUrl"];
+            var botId = configuration["BotId"];
 
-        // Register services
-        builder.Services.AddSingleton<IAnalysisBot, AnalysisBot>();
-        builder.Services.AddSingleton<IMessageBot, MessageBot>();
-        builder.Services.AddSingleton<IMessageIncoming, MessageIncoming>();
-        builder.Services.AddSingleton<IMessageOutgoing>(provider => new MessageOutgoing(botPostUrl));
+            // Register services
+            builder.Services.AddSingleton<IAnalysisBot, AnalysisBot>();
+            builder.Services.AddSingleton<IMessageBot, MessageBot>();
+            builder.Services.AddSingleton<IMessageIncoming, MessageIncoming>();
+            builder.Services.AddSingleton<IMessageOutgoing>(provider => new MessageOutgoing(botPostUrl));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
 
         // Add JSON responses as DI singletons.  
         // Todo: not working right now
