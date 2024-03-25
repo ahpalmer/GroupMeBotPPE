@@ -11,17 +11,15 @@ namespace GroupMeBot.Model;
 public class MessageBot : IMessageBot
 {
     private IMessageOutgoing _messageOutgoing;
-    private ResponseFilePaths _responseFilePaths;
     private ILogger _log;
 
     private static readonly Regex _botCannedResponseRegex = new Regex(@"((?i)(?=.*\bbot\b)(?=.*\bmessage\b)(?=.*\bresponse\b)(?-i))");
     private const string _botPostUrl = "https://api.groupme.com/v3/bots/post";
     private const string _botId = "a4165ae5f7ad5ab682e2c3dd52";
 
-    public MessageBot(IMessageOutgoing messageOutgoing, ResponseFilePaths responseFilePaths, ILogger log)
+    public MessageBot(IMessageOutgoing messageOutgoing, ILogger log)
     {
         _messageOutgoing = messageOutgoing;
-        _responseFilePaths = responseFilePaths;
         _log = log;
     }
 
@@ -56,31 +54,10 @@ public class MessageBot : IMessageBot
         try
         {
             _log.LogInformation($"MessageBot-ChooseUniqueUserTextAsync method start for user: {user}");
+
             string path;
 
-            switch (user)
-            {
-                case "Andrew":
-                    path = _responseFilePaths.Andrew;
-                    break;
-                case "Logan":
-                    path = _responseFilePaths.Logan;
-                    break;
-                case "Sean":
-                    path = _responseFilePaths.Sean;
-                    break;
-                case "Jordan":
-                    path = _responseFilePaths.Jordan;
-                    break;
-                case "Hayden":
-                    path = _responseFilePaths.Hayden;
-                    break;
-                default:
-                    path = _responseFilePaths.Responses;
-                    break;
-            }
-
-            string response = RetrieveRandomResponse(path);
+            string response = RetrieveRandomResponse(user);
 
             _log.LogInformation($"MessageBot-Response for user: {user} retrieved: {response}");
 
@@ -92,7 +69,6 @@ public class MessageBot : IMessageBot
             return HttpStatusCode.BadRequest;
         }
     }
-
 
     public string RetrieveRandomResponse(string person)
     {

@@ -21,7 +21,7 @@ public class MessageBotUnitTest
         var mockMessageOutgoing = new Mock<IMessageOutgoing>();
         var mockResponseFilePaths = new Mock<ResponseFilePaths>();
 
-        var MessageBot = new MessageBot(mockMessageOutgoing.Object, mockResponseFilePaths.Object, mockLogger.Object);
+        var MessageBot = new MessageBot(mockMessageOutgoing.Object, mockLogger.Object);
 
         string[] anonymousResponses = new string[]
         {
@@ -45,7 +45,7 @@ public class MessageBotUnitTest
         var mockMessageOutgoing = new Mock<IMessageOutgoing>();
         var mockResponseFilePaths = new Mock<ResponseFilePaths>();
 
-        var MessageBot = new MessageBot(mockMessageOutgoing.Object, mockResponseFilePaths.Object, mockLogger.Object);
+        var MessageBot = new MessageBot(mockMessageOutgoing.Object, mockLogger.Object);
 
         string[] anonymousResponses = new string[]
         {
@@ -77,7 +77,7 @@ public class MessageBotUnitTest
 
         mockMessageOutgoing.Setup(_ => _.PostAsync("Received Message Response Request", "a4165ae5f7ad5ab682e2c3dd52")).ReturnsAsync(HttpStatusCode.OK);
 
-        var MessageBot = new MessageBot(mockMessageOutgoing.Object, mockResponseFilePaths.Object, mockLogger.Object);
+        var MessageBot = new MessageBot(mockMessageOutgoing.Object, mockLogger.Object);
 
 
         //Act
@@ -98,7 +98,7 @@ public class MessageBotUnitTest
 
         mockMessageOutgoing.Setup(_ => _.PostAsync("Received Message Response Request", "a4165ae5f7ad5ab682e2c3dd52")).ReturnsAsync(HttpStatusCode.OK);
 
-        var MessageBot = new MessageBot(mockMessageOutgoing.Object, mockResponseFilePaths.Object, mockLogger.Object);
+        var MessageBot = new MessageBot(mockMessageOutgoing.Object, mockLogger.Object);
 
         //Act
         HttpStatusCode result = MessageBot.HandleIncomingTextAsync(messageItem).Result;

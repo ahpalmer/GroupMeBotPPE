@@ -38,7 +38,9 @@ public class BasicResponse
         log.LogInformation("GroupMeBot trigger processed a request.");
         MessageItem incMessage = new MessageItem(req.ContentType.ToString());
 
-        log.LogInformation($"GroupMeBot trigger message attempt to parse incoming request:");
+        log.LogInformation($"GroupMeBot trigger message attempt to parse incoming request: {req.ContentType.ToString()}");
+
+        log.LogInformation($"GroupMeBot trigger message: http request body: {req}");
         IActionResult httpResponse = await _messageIncoming.ParseIncomingRequestAsync(req);
 
         // Todo: Reorganize this or delete it.
