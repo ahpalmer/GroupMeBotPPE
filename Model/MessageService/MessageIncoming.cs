@@ -19,11 +19,14 @@ public class MessageIncoming : IMessageIncoming
     private const string _botId = "a4165ae5f7ad5ab682e2c3dd52";
 
 
-    public MessageIncoming(IMessageBot messageBot, IAnalysisBot analysisBot, ILogger logger)
+    public MessageIncoming(
+        IMessageBot messageBot, 
+        IAnalysisBot analysisBot, 
+        ILogger<MessageIncoming> logger)
     {
         this._messageBot = messageBot;
         this._analysisBot = analysisBot;
-        _logger = logger;
+        this._logger = logger;
     }
 
     public async Task<IActionResult> ParseIncomingRequestAsync(HttpRequest req)

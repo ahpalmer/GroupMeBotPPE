@@ -17,7 +17,7 @@ public class MessageBot : IMessageBot
     private const string _botPostUrl = "https://api.groupme.com/v3/bots/post";
     private const string _botId = "a4165ae5f7ad5ab682e2c3dd52";
 
-    public MessageBot(IMessageOutgoing messageOutgoing, ILogger log)
+    public MessageBot(IMessageOutgoing messageOutgoing, ILogger<MessageBot> log)
     {
         _messageOutgoing = messageOutgoing;
         _log = log;

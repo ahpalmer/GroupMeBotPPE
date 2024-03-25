@@ -38,6 +38,7 @@ public class Startup : FunctionsStartup
             builder.Services.AddSingleton<IMessageBot, MessageBot>();
             builder.Services.AddSingleton<IMessageIncoming, MessageIncoming>();
             builder.Services.AddSingleton<IMessageOutgoing>(provider => new MessageOutgoing(botPostUrl));
+            builder.Services.AddLogging();
         }
         catch (Exception ex)
         {

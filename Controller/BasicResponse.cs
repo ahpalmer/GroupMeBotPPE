@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 
 using GroupMeBot.Model;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace GroupMeBot.Controller;
 
@@ -36,27 +38,14 @@ public class BasicResponse
         ILogger log)
     {
         log.LogInformation("GroupMeBot trigger processed a request.");
-        MessageItem incMessage = new MessageItem(req.ContentType.ToString());
+        //MessageItem incMessage = new MessageItem(req.ContentType.ToString());
 
-        log.LogInformation($"GroupMeBot trigger message attempt to parse incoming request: {req.ContentType.ToString()}");
+
+
+        log.LogInformation($"GroupMeBot trigger message attempt to parse incoming request");
 
         log.LogInformation($"GroupMeBot trigger message: http request body: {req}");
         IActionResult httpResponse = await _messageIncoming.ParseIncomingRequestAsync(req);
-
-        // Todo: Reorganize this or delete it.
-        //try
-        //{
-        //    string text = incMessage.Message.Text;
-        //    log.LogInformation($"GroupMeBot trigger text: {incMessage.Message.Text}");
-        //}
-        //catch (NullReferenceException nex)
-        //{
-        //    log.LogInformation($"Error: there was probably no HTTP body which prevented the app from getting text {nex.Message}");
-        //}
-        //catch (Exception ex)
-        //{
-        //    log.LogInformation(ex.Message);
-        //}
 
         return httpResponse;
     }
