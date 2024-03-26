@@ -55,8 +55,6 @@ public class MessageBot : IMessageBot
         {
             _log.LogInformation($"MessageBot-ChooseUniqueUserTextAsync method start for user: {user}");
 
-            string path;
-
             string response = RetrieveRandomResponse(user);
 
             _log.LogInformation($"MessageBot-Response for user: {user} retrieved: {response}");

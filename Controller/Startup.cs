@@ -34,10 +34,20 @@ public class Startup : FunctionsStartup
             var botId = configuration["BotId"];
 
             // Register services
+            //builder.Services.Configure<BotPostConfiguration>(options =>
+            //{
+            //    options.BotPostUrl = botPostUrl;
+            //    options.BotId = botId;
+            //});
+
+            // Add the bot post URL and Id to the DI container:
+            builder.Services.Configure<BotPostConfiguration>(configuration.GetSection("BotPostConfiguration"));
+
+            // Add the services to the DI container
             builder.Services.AddSingleton<IAnalysisBot, AnalysisBot>();
             builder.Services.AddSingleton<IMessageBot, MessageBot>();
             builder.Services.AddSingleton<IMessageIncoming, MessageIncoming>();
-            builder.Services.AddSingleton<IMessageOutgoing>(provider => new MessageOutgoing(botPostUrl));
+            builder.Services.AddSingleton<IMessageOutgoing, MessageOutgoing>();
             builder.Services.AddLogging();
         }
         catch (Exception ex)

@@ -31,69 +31,86 @@ public class MessageIncoming : IMessageIncoming
 
     public async Task<IActionResult> ParseIncomingRequestAsync(HttpRequest req)
     {
-        _logger.LogInformation("Parse Incoming Request-Attempting to parse incoming request");
-        if (req == null)
+        try
         {
-            return new BadRequestObjectResult("No request was received");
-        }
-
-        // This is the problem.  The program stops working here?
-        string content = string.Empty;
-        using (StreamReader sr = new StreamReader(req.Body))
-        {
-            _logger.LogInformation("Parse Incoming Request-reading HttpRequest");
-            content = await sr.ReadToEndAsync();
-        }
-
-        MessageItem message = new MessageItem();
-
-        _logger.LogInformation($"Parse Incoming Request-read HttpRequest: {content}");
-        if (content != null)
-        {
-            message = JsonConvert.DeserializeObject<MessageItem>(content)!;
-            _logger.LogInformation($"Parse Incoming Request-Message text content: {message.Text}");
-        }
-
-        if (message.UserId == _botId)
-        {
-            _logger.LogInformation($"Parse Incoming Request-returning OKObjectResult No response required, message is from bot");
-            return new OkObjectResult("No response required, message is from bot");
-        }
-        if (message.Text == null)
-        {
-            _logger.LogInformation($"Parse Incoming Request-returning BadRequestObjectResult No text was received");
-            return new BadRequestObjectResult("No text was received");
-        }
-
-        _logger.LogInformation($"Parse Incoming Request-attempting regex match");
-        Match analysisRegex = _botAnalysisRegex.Match(message.Text);
-        if (analysisRegex.Success)
-        {
-            _logger.LogInformation($"Parse Incoming Request-analysis regex match successful");
-            return new OkObjectResult(_analysisBot);
-        }
-
-        Match messageRegex = _botMessageRegex.Match(message.Text);
-        if (messageRegex.Success)
-        {
-            _logger.LogInformation($"Parse Incoming Request-regex match successful");
-
-            _logger.LogInformation($"Parse Incoming Request-HandleIncomingTextAsync");
-            var status = await _messageBot.HandleIncomingTextAsync(message);
-            if (status == HttpStatusCode.OK)
+            _logger.LogInformation("Parse Incoming Request-Attempting to parse incoming request");
+            if (req == null)
             {
-                _logger.LogInformation($"Parse Incoming Request-returning OKObjectResult because HttpStatusCode Ok");
-                return new OkObjectResult(status);
+                return new BadRequestObjectResult("No request was received");
             }
-            else if (status == HttpStatusCode.BadRequest)
-            {
-                _logger.LogInformation($"Parse Incoming Request-returning BadRequestObjectResult because HttpStatusCode BadRequest");
-                return new BadRequestObjectResult(status);
-            }
-        }
 
-        _logger.LogInformation($"Parse Incoming Request-final log, didn't trip any if statements, return OkObjectResult");
-        return new OkObjectResult("No response criteria met, no response required");
+            string content = string.Empty;
+            using (StreamReader sr = new StreamReader(req.Body))
+            {
+                _logger.LogInformation("Parse Incoming Request-reading HttpRequest");
+                content = await sr.ReadToEndAsync();
+            }
+
+            MessageItem message = new MessageItem();
+
+            _logger.LogInformation($"Parse Incoming Request-read HttpRequest: {content}");
+            if (content != null)
+            {
+                message = JsonConvert.DeserializeObject<MessageItem>(content)!;
+                _logger.LogInformation($"Parse Incoming Request-Message text content: {message.Text}");
+            }
+
+            // Todo: I'm not sure if this should be UserId or SenderId.  Guess we'll find out!
+            // Delete the wrong one once you've figured it out
+            if (message.UserId == _botId)
+            {
+                _logger.LogInformation($"CRITICAL INFORMATION: message.UserId == _botId");
+                _logger.LogInformation($"Parse Incoming Request-returning OKObjectResult No response required, message is from bot");
+                return new OkObjectResult("No response required, message is from bot");
+            }
+            if (message.SystemSenderId == _botId)
+            {
+                _logger.LogInformation($"CRITICAL INFORMATION: message.SystemSenderId == _botId");
+                _logger.LogInformation($"Parse Incoming Request-returning OKObjectResult No response required, message is from bot");
+                return new OkObjectResult("No response required, message is from bot");
+            }
+            if (message.Text == null)
+            {
+                _logger.LogInformation($"Parse Incoming Request-returning BadRequestObjectResult No text was received");
+                return new BadRequestObjectResult("No text was received");
+            }
+
+            _logger.LogInformation($"Parse Incoming Request-attempting regex match");
+            Match analysisRegex = _botAnalysisRegex.Match(message.Text);
+            if (analysisRegex.Success)
+            {
+                _logger.LogInformation($"Parse Incoming Request-analysis regex match successful");
+                return new OkObjectResult(_analysisBot);
+            }
+
+            Match messageRegex = _botMessageRegex.Match(message.Text);
+            if (messageRegex.Success)
+            {
+                _logger.LogInformation($"Parse Incoming Request-regex match successful");
+
+                _logger.LogInformation($"Parse Incoming Request-HandleIncomingTextAsync");
+                var status = await _messageBot.HandleIncomingTextAsync(message);
+                if (status == HttpStatusCode.OK)
+                {
+                    _logger.LogInformation($"Parse Incoming Request-returning OKObjectResult because HttpStatusCode Ok");
+                    return new OkObjectResult(status);
+                }
+                else if (status == HttpStatusCode.BadRequest)
+                {
+                    _logger.LogInformation($"Parse Incoming Request-returning BadRequestObjectResult because HttpStatusCode BadRequest");
+                    return new BadRequestObjectResult(status);
+                }
+            }
+
+            _logger.LogInformation($"Parse Incoming Request-final log, didn't trip any if statements, return OkObjectResult");
+            return new OkObjectResult("No response criteria met, no response required");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Parse Incoming Request-Exception caught");
+            await Console.Out.WriteLineAsync(ex.ToString());
+            return new BadRequestObjectResult("An error occurred");
+        }
     }
 
 

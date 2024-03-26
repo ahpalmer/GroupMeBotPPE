@@ -1,14 +1,15 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Options;
+using System.Net;
 
 namespace GroupMeBot.Model;
 
 public class MessageOutgoing : IMessageOutgoing
 {
-    private string _botPostUrl;
+    private BotPostConfiguration _botPostConfiguration;
 
-    public MessageOutgoing(string BotPostUrl)
+    public MessageOutgoing(IOptions<BotPostConfiguration> botPostConfiguration)
     {
-        _botPostUrl = BotPostUrl;
+        _botPostConfiguration = botPostConfiguration.Value;
     }
 
     /// <inheritdoc/>
@@ -36,7 +37,7 @@ public class MessageOutgoing : IMessageOutgoing
         using (StringContent content = JsonSerializer.SerializeToJson(request))
         {
             var client = new HttpClient();
-            HttpResponseMessage result = await client.PostAsync(_botPostUrl, content);
+            HttpResponseMessage result = await client.PostAsync(_botPostConfiguration.BotPostUrl, content);
             return result != null ? result.StatusCode : HttpStatusCode.BadRequest;
         }
 

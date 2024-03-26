@@ -13,46 +13,34 @@ namespace GroupMeBot.Model;
 public interface IMessageItem
 {
     /// <summary>
-    /// Gets or sets the the server ID for this message
-    /// </summary>
-    [DataMember(Name = "serverId", EmitDefaultValue = false)]
-    public string? MessageId { get; set; }
-
-    /// <summary>
-    /// Gets or sets the ID of the group to which this message belongs (group only)
-    /// </summary>
-    [DataMember(Name = "groupId", EmitDefaultValue = false)]
-    public string? GroupId { get; set; }
-
-    /// <summary>
-    /// Gets or sets the ID of the user that sent the message
-    /// </summary>
-    [DataMember(Name = "userId", EmitDefaultValue = false)]
-    public string? UserId { get; set; }
-
-    /// <summary>
-    /// Gets or sets the display name of the user who sent this message
-    /// </summary>
-    [DataMember(Name = "displayName", EmitDefaultValue = false)]
-    public string? DisplayName { get; set; }
-
-    /// <summary>
     /// Gets or sets the Text of the message
     /// </summary>
     [DataMember(Name = "text", EmitDefaultValue = false)]
     public string? Text { get; set; }
 
     /// <summary>
-    /// Gets or sets the list of users that have liked this message
+    /// Gets or sets the ID of the user that sent the message
     /// </summary>
-    [DataMember(Name = "favorited_by", EmitDefaultValue = false)]
-    public string[]? LikedBy { get; set; }
+    [DataMember(Name = "user_id", EmitDefaultValue = false)]
+    public string? UserId { get; set; }
+    
+    /// <summary>
+    /// The id for the group this message belongs to
+    /// </summary>
+    [DataMember(Name = "group_id", EmitDefaultValue = false)]
+    public string? GroupId { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the message was sent by the system or not
+    /// Gets or sets the variable "id" for the message.  Use is unspecified.
     /// </summary>
-    [DataMember(Name = "system", EmitDefaultValue = false)]
-    public bool? IsSystem { get; set; }
+    [DataMember(Name = "id", EmitDefaultValue = false)]
+    public int? unspecifiedId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the display name of the user who sent this message
+    /// </summary>
+    [DataMember(Name = "name", EmitDefaultValue = false)]
+    public string? DisplayName { get; set; }
 
     /// <summary>
     /// Gets or sets the ID of the system that sent the message
@@ -61,9 +49,20 @@ public interface IMessageItem
     public string? SystemSenderId { get; set; }
 
     /// <summary>
-    /// Gets or sets the type of system that sent the message
+    /// Gets or sets the type for the message sender
     /// </summary>
     [DataMember(Name = "sender_type", EmitDefaultValue = false)]
     public string? SystemSenderType { get; set; }
 
+    /// <summary>
+    /// Gets or sets the source guid for this message
+    /// </summary>
+    [DataMember(Name = "source_guid", EmitDefaultValue = false)]
+    public string? sourceGuid { get; set; }
+
+    /// <summary>
+    /// Displays whether this is a system message or not
+    /// </summary>
+    [DataMember(Name = "system", EmitDefaultValue = false)]
+    public bool? IsSystem { get; set; }
 }
