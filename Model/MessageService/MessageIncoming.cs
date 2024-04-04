@@ -107,7 +107,7 @@ public class MessageIncoming : IMessageIncoming
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Parse Incoming Request-Exception caught");
+            _logger.LogError(ex, "Parse Incoming Request-Exception caught: {ex}", ex);
             await Console.Out.WriteLineAsync(ex.ToString());
             return new BadRequestObjectResult("An error occurred");
         }
