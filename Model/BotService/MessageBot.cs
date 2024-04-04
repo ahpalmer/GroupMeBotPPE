@@ -11,7 +11,7 @@ namespace GroupMeBot.Model;
 public class MessageBot : IMessageBot
 {
     private IMessageOutgoing _messageOutgoing;
-    private ILogger<MessageBot> _log;
+    private ILogger _log;
 
     private static readonly Regex _botCannedResponseRegex = new Regex(@"((?i)(?=.*\bbot\b)(?=.*\bmessage\b)(?=.*\bresponse\b)(?-i))");
     private const string _botPostUrl = "https://api.groupme.com/v3/bots/post";

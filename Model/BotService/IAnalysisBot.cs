@@ -8,5 +8,4 @@ namespace GroupMeBot.Model;
 
 public interface IAnalysisBot
 {
-
 }

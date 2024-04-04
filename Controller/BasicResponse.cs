@@ -44,7 +44,7 @@ public class BasicResponse
 
         log.LogInformation($"GroupMeBot trigger message attempt to parse incoming request");
 
-        log.LogInformation($"GroupMeBot trigger message: http request body: {req}");
+        log.LogInformation("GroupMeBot trigger message: http request body: {req}", req);
         IActionResult httpResponse = await _messageIncoming.ParseIncomingRequestAsync(req);
 
         return httpResponse;
