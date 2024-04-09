@@ -12,7 +12,7 @@ public class MessageIncoming : IMessageIncoming
 {
     private IMessageBot _messageBot;
     private IAnalysisBot _analysisBot;
-    private ILogger<MessageIncoming> _logger;
+    private ILogger _logger;
 
     private static readonly Regex _botAnalysisRegex = new Regex(@"((?i)(\bbot\b.*\banalysis\b)|(\banalysis\b.*\bbot\b)(?-i))");
     private static readonly Regex _botMessageRegex = new Regex(@"((?i)(\bbot\b.*\bmessage\b)|(\bmessage\b.*\bbot\b)(?-i))");
@@ -107,7 +107,7 @@ public class MessageIncoming : IMessageIncoming
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Parse Incoming Request-Exception caught");
+            _logger.LogError(ex, "Parse Incoming Request-Exception caught: {ex}", ex);
             await Console.Out.WriteLineAsync(ex.ToString());
             return new BadRequestObjectResult("An error occurred");
         }
