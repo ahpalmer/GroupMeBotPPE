@@ -18,13 +18,15 @@ namespace GroupMeBot.Controller;
 public class BasicResponse
 {
     private readonly IMessageIncoming _messageIncoming;
+    private readonly ILogger _logger;
 
     // Todo: replace this with a json file variable
     private const string BotPostUrl = "https://api.groupme.com/v3/bots/post";
 
-    public BasicResponse(IMessageIncoming messageIncoming)
+    public BasicResponse(IMessageIncoming messageIncoming, ILogger<BasicResponse> logger)
     {
         _messageIncoming = messageIncoming;
+        _logger = logger;
     }
 
     /// <summary>
@@ -34,17 +36,16 @@ public class BasicResponse
 
     [FunctionName("BasicResponse")]
     public async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "GroupMeBot/BasicResponse")] HttpRequest req,
-        ILogger log)
+        [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "GroupMeBot/BasicResponse")] HttpRequest req)
     {
-        log.LogInformation("GroupMeBot trigger processed a request.");
+        _logger.LogInformation("GroupMeBot trigger processed a request.");
         //MessageItem incMessage = new MessageItem(req.ContentType.ToString());
 
 
 
-        log.LogInformation($"GroupMeBot trigger message attempt to parse incoming request");
+        _logger.LogInformation($"GroupMeBot trigger message attempt to parse incoming request");
 
-        log.LogInformation($"GroupMeBot trigger message: http request body: {req}");
+        _logger.LogInformation($"GroupMeBot trigger message: http request body: {req}");
         IActionResult httpResponse = await _messageIncoming.ParseIncomingRequestAsync(req);
 
         return httpResponse;
