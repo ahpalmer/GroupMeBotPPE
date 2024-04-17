@@ -29,7 +29,7 @@ public class MessageItem : IMessageItem
 
     /// <inheritdoc/>
     [DataMember(Name = "id", EmitDefaultValue = false)]
-    public int? unspecifiedId { get; set; }
+    public string? unspecifiedId { get; set; }
 
     /// <inheritdoc/>
     [DataMember(Name = "name", EmitDefaultValue = false)]

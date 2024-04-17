@@ -34,7 +34,7 @@ public interface IMessageItem
     /// Gets or sets the variable "id" for the message.  Use is unspecified.
     /// </summary>
     [DataMember(Name = "id", EmitDefaultValue = false)]
-    public int? unspecifiedId { get; set; }
+    public string? unspecifiedId { get; set; }
 
     /// <summary>
     /// Gets or sets the display name of the user who sent this message
