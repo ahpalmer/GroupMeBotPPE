@@ -12,6 +12,7 @@ public class MessageIncoming : IMessageIncoming
 {
     private IMessageBot _messageBot;
     private IAnalysisBot _analysisBot;
+    private IGifBot _gifBot;
     private ILogger _logger;
 
     private static readonly Regex _botAnalysisRegex = new Regex(@"((?i)(\bbot\b.*\banalysis\b)|(\banalysis\b.*\bbot\b)(?-i))");
@@ -22,10 +23,12 @@ public class MessageIncoming : IMessageIncoming
     public MessageIncoming(
         IMessageBot messageBot, 
         IAnalysisBot analysisBot, 
+        IGifBot gifBot,
         ILogger<MessageIncoming> logger)
     {
         this._messageBot = messageBot;
         this._analysisBot = analysisBot;
+        this._gifBot = gifBot;
         this._logger = logger;
     }
 
@@ -76,6 +79,23 @@ public class MessageIncoming : IMessageIncoming
             }
 
             _logger.LogInformation($"Parse Incoming Request-attempting regex match");
+
+            if (message.Text.StartsWith("Gif:") || message.Text.StartsWith("gif:"))
+            {
+                _logger.LogInformation($"Gif: Parse Incoming Request-gif match successful");
+                var status = await _gifBot.HandleIncomingTextAsync(message);
+                if (status == HttpStatusCode.OK)
+                {
+                    _logger.LogInformation($"Gif: Parse Incoming Request-returning OKObjectResult because HttpStatusCode Ok");
+                    return new OkObjectResult(status);
+                }
+                else if (status == HttpStatusCode.BadRequest)
+                {
+                    _logger.LogInformation($"Gif: Parse Incoming Request-returning BadRequestObjectResult because HttpStatusCode BadRequest");
+                    return new BadRequestObjectResult(status);
+                }
+            }
+
             Match analysisRegex = _botAnalysisRegex.Match(message.Text);
             if (analysisRegex.Success)
             {

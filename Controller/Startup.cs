@@ -45,6 +45,7 @@ public class Startup : FunctionsStartup
             // Add the services to the DI container
             builder.Services.AddSingleton<IAnalysisBot, AnalysisBot>();
             builder.Services.AddSingleton<IMessageBot, MessageBot>();
+            builder.Services.AddSingleton<IGifBot, GifBot>();
             builder.Services.AddSingleton<IMessageIncoming, MessageIncoming>();
             builder.Services.AddSingleton<IMessageOutgoing, MessageOutgoing>();
             builder.Services.AddLogging();
