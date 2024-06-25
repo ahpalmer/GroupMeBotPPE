@@ -13,22 +13,24 @@ public class MessageIncoming : IMessageIncoming
     private IMessageBot _messageBot;
     private IAnalysisBot _analysisBot;
     private IGifBot _gifBot;
+    private IBotPostConfiguration _botPostConfiguration;
     private ILogger _logger;
 
+    // TODO: Must delete this botId before going to prod.  This is the botId for the test bot so it's not that big of a deal, but don't put the prod botId in the code.
     private static readonly Regex _botAnalysisRegex = new Regex(@"((?i)(\bbot\b.*\banalysis\b)|(\banalysis\b.*\bbot\b)(?-i))");
     private static readonly Regex _botMessageRegex = new Regex(@"((?i)(\bbot\b.*\bmessage\b)|(\bmessage\b.*\bbot\b)(?-i))");
-    private const string _botId = "a4165ae5f7ad5ab682e2c3dd52";
-
 
     public MessageIncoming(
         IMessageBot messageBot, 
         IAnalysisBot analysisBot, 
         IGifBot gifBot,
+        IBotPostConfiguration botPostConfiguration,
         ILogger<MessageIncoming> logger)
     {
         this._messageBot = messageBot;
         this._analysisBot = analysisBot;
         this._gifBot = gifBot;
+        this._botPostConfiguration = botPostConfiguration;
         this._logger = logger;
     }
 
@@ -60,13 +62,13 @@ public class MessageIncoming : IMessageIncoming
 
             // Todo: I'm not sure if this should be UserId or SenderId.  Guess we'll find out!
             // Delete the wrong one once you've figured it out
-            if (message.UserId == _botId)
+            if (message.UserId == _botPostConfiguration.BotId)
             {
                 _logger.LogInformation($"CRITICAL INFORMATION: message.UserId == _botId");
                 _logger.LogInformation($"Parse Incoming Request-returning OKObjectResult No response required, message is from bot");
                 return new OkObjectResult("No response required, message is from bot");
             }
-            if (message.SystemSenderId == _botId)
+            if (message.SystemSenderId == _botPostConfiguration.BotId)
             {
                 _logger.LogInformation($"CRITICAL INFORMATION: message.SystemSenderId == _botId");
                 _logger.LogInformation($"Parse Incoming Request-returning OKObjectResult No response required, message is from bot");

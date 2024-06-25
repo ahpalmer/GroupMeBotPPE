@@ -11,15 +11,17 @@ namespace GroupMeBot.Model;
 public class MessageBot : IMessageBot
 {
     private IMessageOutgoing _messageOutgoing;
+    private IBotPostConfiguration _botPostConfiguration;
     private ILogger _log;
 
     private static readonly Regex _botCannedResponseRegex = new Regex(@"((?i)(?=.*\bbot\b)(?=.*\bmessage\b)(?=.*\bresponse\b)(?-i))");
-    private const string _botPostUrl = "https://api.groupme.com/v3/bots/post";
-    private const string _botId = "a4165ae5f7ad5ab682e2c3dd52";
 
-    public MessageBot(IMessageOutgoing messageOutgoing, ILogger<MessageBot> log)
+    public MessageBot(IMessageOutgoing messageOutgoing,
+        IBotPostConfiguration botPostConfiguration,
+        ILogger<MessageBot> log)
     {
         _messageOutgoing = messageOutgoing;
+        _botPostConfiguration = botPostConfiguration;
         _log = log;
     }
 
@@ -59,7 +61,7 @@ public class MessageBot : IMessageBot
 
             _log.LogInformation($"MessageBot-Response for user: {user} retrieved: {response}");
 
-            return await _messageOutgoing.PostAsync($"{response}", _botId);
+            return await _messageOutgoing.PostAsync($"{response}", _botPostConfiguration.BotId);
         }
         catch(Exception ex)
         {
@@ -145,7 +147,6 @@ public class MessageBot : IMessageBot
                     "You have a face for radio",
                     "You'd think the Secret Service woulda taught you to be less ugly"
                 };
-            // Todo: Compliments and insults might be unneccessary
             case "Compliments":
                 return new List<string>
                 {

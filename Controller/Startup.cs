@@ -2,7 +2,6 @@
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
 
 [assembly: FunctionsStartup(typeof(GroupMeBot.Controller.Startup))]
@@ -21,26 +20,17 @@ public class Startup : FunctionsStartup
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(context.ApplicationRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{context.EnvironmentName}.json", optional: true)
-                //.AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                .AddUserSecrets<Startup>(optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
                 .Build();
+
+            var botPostUri = configuration["GroupMePostUri"];
+            var giphyBotId = configuration["GiphyBotId"];
+            var groupMeBotId = configuration["GroupMeBotId"];
+
 
             // Register HttpClient
             builder.Services.AddHttpClient();
-
-            // Retrieve the BotPostUrl from configuration
-            var botPostUrl = configuration["BotPostUrl"];
-            var botId = configuration["BotId"];
-
-            // Register services
-            //builder.Services.Configure<BotPostConfiguration>(options =>
-            //{
-            //    options.BotPostUrl = botPostUrl;
-            //    options.BotId = botId;
-            //});
-
-            // Add the bot post URL and Id to the DI container:
-            builder.Services.Configure<BotPostConfiguration>(configuration.GetSection("BotPostConfiguration"));
 
             // Add the services to the DI container
             builder.Services.AddSingleton<IAnalysisBot, AnalysisBot>();
@@ -48,19 +38,13 @@ public class Startup : FunctionsStartup
             builder.Services.AddSingleton<IGifBot, GifBot>();
             builder.Services.AddSingleton<IMessageIncoming, MessageIncoming>();
             builder.Services.AddSingleton<IMessageOutgoing, MessageOutgoing>();
+            builder.Services.AddSingleton<IBotPostConfiguration>(new BotPostConfiguration(botPostUri, groupMeBotId));
+            builder.Services.AddSingleton<IGiphyBotPostConfig>(new GiphyBotPostConfig(giphyBotId));
             builder.Services.AddLogging();
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
-
-        // Add JSON responses as DI singletons.  
-        // Todo: not working right now
-        //var responseFilePathsConfig = configuration.GetSection("ResponseFilePaths").Get<ResponseFilePaths>();
-        //builder.Services.AddSingleton(responseFilePathsConfig);
-
-        // Attempt 2:
-
     }
 }

@@ -9,14 +9,18 @@ namespace GroupMeBot.Model;
 public class GifBot : IGifBot
 {
     private IMessageOutgoing _messageOutgoing;
+    private IBotPostConfiguration _botPostConfiguration;
+    private IGiphyBotPostConfig _giphyBotPostConfig;
     private ILogger _logger;
 
-    private const string _botId = "a4165ae5f7ad5ab682e2c3dd52";
-    private const string _apiKey = "MnAsvZ5OapLqsk0kCnT7ew97GpBqM8l5";
-
-    public GifBot(IMessageOutgoing messageOutgoing, ILogger<GifBot> log)
+    public GifBot(IMessageOutgoing messageOutgoing, 
+        IBotPostConfiguration botPostConfiguration, 
+        IGiphyBotPostConfig giphyBotPostConfig,
+        ILogger<GifBot> log)
     {
         _messageOutgoing = messageOutgoing;
+        _botPostConfiguration = botPostConfiguration;
+        _giphyBotPostConfig = giphyBotPostConfig;
         _logger = log;
     }
 
@@ -25,7 +29,7 @@ public class GifBot : IGifBot
     {
         _logger.LogInformation("GifBot-HandleIncomingTextAsync method start");
         _logger.LogInformation("GifBot-message.Text.Substring(4): {message.Text.Substring(4)}", message.Text.Substring(4));
-        var giphy = new Giphy(_apiKey);
+        var giphy = new Giphy(_giphyBotPostConfig.GiphyBotId);
         string queryText = FixLongString(message.Text.Substring(4));
         var searchParameter = new SearchParameter()
         {
@@ -39,12 +43,12 @@ public class GifBot : IGifBot
         if (string.IsNullOrEmpty(gifResult.Data[0].Images.Original.Url))
         {
             _logger.LogInformation("GifBot-HandleIncomingTextAsync: Giphy did not return a gif");
-            return await _messageOutgoing.PostAsync($"Giphy did not return a gif.  Not my fault", _botId);
+            return await _messageOutgoing.PostAsync($"Giphy did not return a gif.  Not my fault", _botPostConfiguration.BotId);
         }
 
         _logger.LogInformation("GifBot-HandleIncomingTextAsync small width was null: {gifResult.Data[0].Images.Original.Url}", gifResult.Data[0].Images.Original.Url);
 
-        return await _messageOutgoing.PostAsync($"{gifResult.Data[0].Images.Original.Url}", _botId);
+        return await _messageOutgoing.PostAsync($"{gifResult.Data[0].Images.Original.Url}", _botPostConfiguration.BotId);
 
         // Todo: delete if gifs work.  If Gifs get too unwieldy then this code will use smaller gifs
         //if (!string.IsNullOrEmpty(gifResult.Data[0].Images.FixedWidthSmall.Url))
