@@ -84,8 +84,7 @@ public class MessageBot : IMessageBot
         catch (Exception ex)
         {
             _log.LogError($"MessageBot-RetrieveRandomResponse method failed, {ex}");
-            // Todo: bad return
-            return null;
+            return "RetrieveRandomResponse-Bad Return";
         }
     }
 

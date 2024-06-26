@@ -16,7 +16,6 @@ public class MessageIncoming : IMessageIncoming
     private IBotPostConfiguration _botPostConfiguration;
     private ILogger _logger;
 
-    // TODO: Must delete this botId before going to prod.  This is the botId for the test bot so it's not that big of a deal, but don't put the prod botId in the code.
     private static readonly Regex _botAnalysisRegex = new Regex(@"((?i)(\bbot\b.*\banalysis\b)|(\banalysis\b.*\bbot\b)(?-i))");
     private static readonly Regex _botMessageRegex = new Regex(@"((?i)(\bbot\b.*\bmessage\b)|(\bmessage\b.*\bbot\b)(?-i))");
 
@@ -134,7 +133,6 @@ public class MessageIncoming : IMessageIncoming
             return new BadRequestObjectResult("An error occurred");
         }
     }
-
 
     public string ParseIncomingHeadersAsync(HttpRequest req)
     {

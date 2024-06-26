@@ -15,9 +15,6 @@ public class BasicResponse
     private readonly IMessageIncoming _messageIncoming;
     private readonly ILogger _logger;
 
-    // Todo: replace this with a json file variable
-    private const string BotPostUrl = "https://api.groupme.com/v3/bots/post";
-
     public BasicResponse(IMessageIncoming messageIncoming, ILogger<BasicResponse> logger)
     {
         _messageIncoming = messageIncoming;
