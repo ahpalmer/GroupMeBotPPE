@@ -81,7 +81,7 @@ public class MessageIncoming : IMessageIncoming
 
             _logger.LogInformation($"Parse Incoming Request-attempting regex match");
 
-            if (message.Text.StartsWith("Gif:") || message.Text.StartsWith("gif:"))
+            if (message.Text.StartsWith("Gif:") || message.Text.StartsWith("gif:") || message.Text.StartsWith("GIF:"))
             {
                 _logger.LogInformation($"Gif: Parse Incoming Request-gif match successful");
                 var status = await _gifBot.HandleIncomingTextAsync(message);
