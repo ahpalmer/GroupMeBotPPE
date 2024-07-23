@@ -32,8 +32,10 @@ bld/
 *.publishproj
 
 # Exclude Deployment files and dependency information
-Properties/PublishProfiles/
-Properties/ServiceDependencies/
+**/Properties/PublishProfiles/
+**/Properties/ServiceDependencies/
+**/serviceDependencies*.json
+**/serviceDependencies*.json/user
 
 # Visual Studio 2015 cache/options directory
 .vs/
