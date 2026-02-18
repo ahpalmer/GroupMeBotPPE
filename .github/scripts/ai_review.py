@@ -7,7 +7,7 @@ import sys
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
-ANDREW_GITHUB_PRBOT = os.environ["ANTHROPIC_API_KEY"]
+ANDREW_GITHUB_PRBOT = os.environ["ANDREW_GITHUB_PRBOT"]
 GITHUB_TOKEN      = os.environ["GITHUB_TOKEN"]
 REPO              = os.environ["REPO"]           # e.g. "yourname/yourrepo"
 PR_NUMBER         = os.environ["PR_NUMBER"]
@@ -73,7 +73,7 @@ Respond ONLY with a valid JSON object in exactly this structure (no markdown fen
 If there are no issues, return an empty comments array and verdict APPROVE."""
 
 def run_review(diff: str, readme: str, pr_body: str) -> dict:
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    client = anthropic.Anthropic(api_key=ANDREW_GITHUB_PRBOT)
 
     user_message = f"""Project context (README):
 {readme}
